@@ -18,7 +18,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.11'
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -103,12 +103,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Log in to DockerHub
-        run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+        run: echo "${{ secrets.Madaraka-1 }}" | docker login -u "${{ secrets.aslwebdeveloper }}" --password-stdin
 
       - name: Build & Push Docker Images
         run: |
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/speech-translator:latest .
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/speech-translator:latest
+          docker build -t ${{ secrets.Madaraka-1 }}/speech-translator:latest .
+          docker push ${{ secrets.aslwebdeveloper }}/speech-translator:latest
 
-      - name: Deploy (Placeholder)
+      - name: Deploy (DigitalOcean)
         run: echo "Deploy your container using Kubernetes, AWS ECS, or other platforms"
