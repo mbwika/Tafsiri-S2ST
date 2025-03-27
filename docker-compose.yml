@@ -32,7 +32,7 @@ services:
       dockerfile: Dockerfile.dev  # Use the development Dockerfile for backend
     container_name: tafsiri-backend-dev
     ports:
-      - "8000:8000"
+      - "8008:8008"
     volumes:
       - ./backend:/app
     env_file:
@@ -45,7 +45,7 @@ services:
       dockerfile: Dockerfile.dev  # Use the development Dockerfile
     container_name: tafsiri-frontend-dev
     ports:
-      - "5173:5173"
+      - "5005:5005"
     volumes:
       - ./frontend:/app  # Mount the frontend code for live reloading
     depends_on:
