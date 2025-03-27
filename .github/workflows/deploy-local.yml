@@ -1,4 +1,4 @@
-name: Deploy to Localhost
+name: CI/CD Pipeline - Deploy to Localhost
 
 on:
   push:
