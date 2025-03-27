@@ -1,0 +1,28 @@
+# Use an official Python image for development
+FROM python:3.11
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Install system dependencies for torchaudio (or any other dependencies)
+RUN apt update && apt install -y \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy the requirements file and install dependencies
+COPY requirements.txt .
+
+# Install development dependencies (this will be cached unless requirements.txt changes)
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Install additional tools for live-reloading, like `watchgod` (used by Uvicorn for auto-reload)
+RUN pip install watchgod
+
+# Copy the application code
+COPY . .
+
+# Expose FastAPI's default port
+EXPOSE 8000
+
+# Use Uvicorn with --reload to enable live-reloading in development
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

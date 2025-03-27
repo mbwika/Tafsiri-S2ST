@@ -1,15 +1,51 @@
-version: "3.8"
+# version: "3.8"
+# services:
+#   backend:
+#     build: ./backend
+#     container_name: tafsiri-backend
+#     ports:
+#       - "8000:8000"
+#     volumes:
+#       - ./backend:/app
+#     env_file:
+#       - ./backend/.env
+#     restart: always
+
+#   frontend:
+#     build: ./frontend
+#     container_name: tafsiri-frontend
+#     ports:
+#       - "3000:3000"
+#     depends_on:
+#       - backend
+#     restart: always
+
+version: '3.8'
+
 services:
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev  # Use the development Dockerfile for backend
+    container_name: tafsiri-backend-dev
     ports:
       - "8000:8000"
     volumes:
-      - ./backend:/app
+      - ./backend:/app  # Mount the backend code to enable live-reloading
+    env_file:
+      - ./backend/.env
+    restart: always
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev  # Use the development Dockerfile
+    container_name: tafsiri-frontend-dev
     ports:
       - "5173:5173"
+    volumes:
+      - ./frontend:/app  # Mount the frontend code for live reloading
     depends_on:
       - backend
+    restart: always
+

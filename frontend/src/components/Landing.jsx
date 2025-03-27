@@ -20,6 +20,7 @@ export default function Landing() {
   };
 
   return (
+    <div className="bg-white dark:bg-gray-900 dracula:bg-dracula-background p-4 rounded-lg">
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
       <div className="p-6 max-w-lg bg-white shadow-lg rounded-lg">
         <h1 className="text-xl font-bold">Tafsiri - Audio Translator</h1>
@@ -28,6 +29,7 @@ export default function Landing() {
         <p className="mt-2">{status}</p>
         {translatedAudio && <audio controls src={translatedAudio} className="mt-4 w-full" />}
       </div>
+    </div>
     </div>
   );
 }

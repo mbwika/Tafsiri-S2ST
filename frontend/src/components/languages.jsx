@@ -57,7 +57,7 @@
      const voicesForSelectedLanguage = languages.find(lang => lang.languageCode === selectedLanguageCode)?.voices;
    
      return (
-       <div>
+      <div className="bg-white dark:bg-gray-900 dracula:bg-dracula-background p-4 rounded-lg">
          <select value={selectedLanguageCode} onChange={handleLanguageChange}>
            {languages.map((lang) => (
              <option key={lang.languageCode} value={lang.languageCode}>

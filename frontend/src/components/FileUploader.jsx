@@ -17,6 +17,8 @@ const FileUploader = ({ setAudioFile, setUploadProgress }) => {
 
   return (
     <div>
+      <div className="bg-white dark:bg-gray-900 dracula:bg-dracula-background p-4 rounded-lg">
+
       <label className="block text-gray-700 font-medium">Upload Audio File:</label>
       <input
         type="file"
@@ -24,6 +26,7 @@ const FileUploader = ({ setAudioFile, setUploadProgress }) => {
         className="w-full p-2 border rounded-md"
         onChange={handleFileChange}
       />
+      </div>
     </div>
   );
 };

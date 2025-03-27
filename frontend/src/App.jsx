@@ -7,6 +7,7 @@ import viteLogo from "./assets/Artscilab.png";
 import "./App.css";
 import FileUploader from "./components/FileUploader";
 import LanguageSelectorWrapper from "./components/languages";
+import ThemeToggle from "../ThemeToggle.jsx";
 
 function App() {
   const [selectedLanguage, setSelectedLanguage] = useState("");
@@ -55,7 +56,9 @@ function App() {
   };
 
   return (
-
+    <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-gray-900 dracula:bg-dracula-background text-black dark:text-white dracula:text-dracula-white">
+      <ThemeToggle />
+    
     <div className="app-container min-h-screen bg-gray-100 p-6">
       <header className="flex justify-between items-center mb-6">
         <a href="https://react.dev" target="_blank">
@@ -123,6 +126,7 @@ function App() {
 
 
       </div>
+    </div>
     </div>
   );
 }
