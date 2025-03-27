@@ -20,8 +20,6 @@
 #       - backend
 #     restart: always
 
-version: '3.8'
-
 services:
   backend:
     build:
@@ -32,8 +30,6 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app  # Mount the backend code to enable live-reloading
-    env_file:
-      - ./backend/.env
     restart: always
 
   frontend:
