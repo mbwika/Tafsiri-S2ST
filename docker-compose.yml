@@ -34,7 +34,9 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./backend:/app  # Mount the backend code to enable live-reloading
+      - ./backend:/app
+    env_file:
+      - ./backend/.env  # Mount the backend code to enable live-reloading
     restart: always
 
   frontend:
