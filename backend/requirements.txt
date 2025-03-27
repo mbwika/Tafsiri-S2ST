@@ -61,3 +61,4 @@ urllib3==2.3.0
 uvicorn==0.34.0
 yarl==1.18.3
 protobuf==3.19.0
+tiktoken==0.1.0
