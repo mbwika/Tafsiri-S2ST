@@ -22,7 +22,7 @@ RUN pip install watchgod
 COPY . .
 
 # Expose FastAPI's default port
-EXPOSE 8000
+EXPOSE 8008
 
 # Use Uvicorn with --reload to enable live-reloading in development
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
