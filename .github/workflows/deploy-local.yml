@@ -19,4 +19,4 @@ jobs:
           docker-compose up --build -d
 
       - name: Verify Deployment
-        run: curl -f http://localhost:8008/docs || exit 1
+        run: curl -f http://localhost:8000/docs || exit 1

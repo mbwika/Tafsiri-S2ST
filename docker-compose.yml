@@ -30,7 +30,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile.dev  # Use the development Dockerfile for backend
-    container_name: tafsiri-backend-dev
+    container_name: backend-dev
     ports:
       - "8000:8000"
     volumes:
@@ -43,7 +43,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev  # Use the development Dockerfile
-    container_name: tafsiri-frontend-dev
+    container_name: frontend-dev
     ports:
       - "3000:3000"
     volumes:
