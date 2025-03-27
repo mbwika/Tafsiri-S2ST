@@ -22,7 +22,7 @@ jobs:
       - name: Set Up Python Environment
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.11.7'
 
       - name: Install Backend Dependencies
         run: |
