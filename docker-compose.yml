@@ -1,4 +1,6 @@
-# version: "3.8"
+#**********REMOTE DEPPLOYMENT******************#
+#**Remember to add server access secrets on Actions**#
+
 # services:
 #   backend:
 #     build: ./backend
@@ -20,7 +22,8 @@
 #       - backend
 #     restart: always
 
-version: '3.8'
+#*****LOCAL DEPLOYMENT***********************#
+#**Make sure Docker is installed in the localhost**#
 
 services:
   backend:
@@ -32,8 +35,6 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app  # Mount the backend code to enable live-reloading
-    env_file:
-      - ./backend/.env
     restart: always
 
   frontend:
