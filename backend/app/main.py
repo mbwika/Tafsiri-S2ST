@@ -1,6 +1,6 @@
-#main.py
+# main.py
 
-from fastapi import FastAPI, File, UploadFile, Form
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 from pydantic import BaseModel
 import torch
 import torchaudio
@@ -26,6 +26,10 @@ app.add_middleware(
     expose_headers=["Content-Disposition"]  # Ensure file downloads work correctly
 )
 
+# Ensure the upload directory exists
+UPLOAD_DIR = "uploads"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
 # Serve static files from the "uploads" directory
 app.mount("/static", StaticFiles(directory="uploads"), name="static")
 
@@ -50,6 +54,11 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 def load_audio(file_path):
     # Load the audio file
     waveform, sample_rate = torchaudio.load(file_path)
+
+    try:
+        waveform, sample_rate = torchaudio.load(file_path)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error opening '{file_path}': {str(e)}")
     
     # Ensure mono if stereo (convert to single channel)
     if waveform.shape[0] > 1:  # If there are multiple channels (e.g., stereo)
@@ -73,7 +82,18 @@ VALID_LANGUAGES = [
     'yor', 'yue', 'zlm', 'zul'
 ]
 
-#main.py
+
+ALLOWED_AUDIO_EXTENSIONS = ['.wav', '.mp3', '.flac', '.m4a', '.ogg', '.opus', '.amr', '.awb', '.aac', '.wma'] 
+
+def is_valid_audio_file(file: UploadFile):
+    # Check file extension
+    file_extension = os.path.splitext(file.filename)[1].lower()
+    if file_extension not in ALLOWED_AUDIO_EXTENSIONS:
+        return False
+    # Check MIME type
+    if not file.content_type.startswith('audio/'):
+        return False
+    return True
 
 @app.post("/translate/")
 async def translate_audio(file: UploadFile = File(...), target_language: str = Form(...), voice: str = Form(...)):
@@ -90,6 +110,11 @@ async def translate_audio(file: UploadFile = File(...), target_language: str = F
         if target_language not in VALID_LANGUAGES:
             logger.error(f"Invalid target language: {target_language}")
             return {"error": f"Invalid target language. Supported languages are: {', '.join(VALID_LANGUAGES)}"}
+
+        # Check if the uploaded file is a valid audio file
+        if not is_valid_audio_file(file):
+            logger.error(f"Invalid file type for {file.filename}. Only audio files are allowed.")
+            raise HTTPException(status_code=400, detail="Invalid file type. Only audio files with extensions .wav, .mp3, .flac are allowed.")
 
         # Save the uploaded file
         file_path = os.path.join(UPLOAD_DIR, file.filename)
@@ -130,4 +155,3 @@ async def translate_audio(file: UploadFile = File(...), target_language: str = F
     except Exception as e:
         logger.error(f"Error during translation: {e}", exc_info=True)
         return {"error": str(e)}
-
