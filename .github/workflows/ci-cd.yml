@@ -89,21 +89,22 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-
+        
       - name: Deploy Based on Server Host
         run: |
-          if [ "${{ secrets.SERVER_HOST }}" == "localhost" ]; then
-            echo "Deploying locally..."
-            docker compose down
-            docker compose up --build -d
-            curl -f http://localhost:8008/docs || exit 1
-          else
-            echo "Deploying to remote server..."
-            ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << EOF
-              docker compose pull
-              docker compose up -d
-            EOF
-          fi
+                  if [ "${{ secrets.SERVER_HOST }}" == "localhost" ]; then
+                    echo "Deploying locally..."
+                    docker compose down
+                    docker compose up --build -d
+                    curl -f http://localhost:8000/docs || exit 1
+                  else
+                    echo "Deploying to remote server..."
+                    ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+                      docker compose pull
+                      docker compose up -d
+                      EOF
+                  fi
+        
 
 
 
