@@ -32,7 +32,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Backend Application
-        run: PYTHONPATH=backend python main.py
+        run: PYTHONPATH=backend python app/main.py
 
   frontend:
     name: Frontend
