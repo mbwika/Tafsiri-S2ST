@@ -33,7 +33,6 @@ jobs:
       - name: Run Backend Tests (if any)
         run: echo "No tests for now"
         
-
   frontend:
     name: Frontend
     runs-on: ubuntu-latest
@@ -86,31 +85,26 @@ jobs:
   deploy:
     name: Deploy Application
     needs: build-and-deploy
-    runs-on: ubuntu-latest
-    env:
-      SERVER_HOST: ${{ secrets.SERVER_HOST }}
-
+    runs-on: self-hosted  # Use a self-hosted runner for local deployment
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Deploy to Local Machine (Self-Hosted Runner)
-        if: env.SERVER_HOST == 'localhost'
+      - name: Deploy Based on Server Host
         run: |
-          docker compose down
-          docker compose up --build -d
-          curl -f http://localhost:8000/docs || exit 1
+          if [ "${{ secrets.SERVER_HOST }}" == "localhost" ]; then
+            echo "Deploying locally..."
+            docker compose down
+            docker compose up --build -d
+            curl -f http://localhost:8000/docs || exit 1
+          else
+            echo "Deploying to remote server..."
+            ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << EOF
+              docker compose pull
+              docker compose up -d
+            EOF
+          fi
 
-      - name: Deploy to Remote Server
-        if: env.SERVER_HOST != 'localhost'
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ env.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          password: ${{ secrets.SERVER_PASSWORD }}
-          script: |
-            docker compose pull
-            docker compose up -d
 
 
 
