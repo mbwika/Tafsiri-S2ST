@@ -1,25 +1,26 @@
 # tests/test_main.py
+import os
 import pytest
 from fastapi.testclient import TestClient
-from fastapi.app.main import app
+from app.main import app
 
 client = TestClient(app)
 
 @pytest.fixture
 def mock_audio_file():
     # Create a mock audio file (for testing purposes)
-    with open("test_audio.wav", "wb") as f:
+    with open("./uploads/station.wav", "wb") as f:
         f.write(b"fake audio data")
-    yield "test_audio.wav"
-    os.remove("test_audio.wav")
+    yield "station.wav"
+    os.remove("./uploads/station.wav")
 
 def test_translate_audio_valid(mock_audio_file):
     # Test a valid translation request
     with open(mock_audio_file, "rb") as audio_file:
         response = client.post(
             "/translate/",
-            files={"file": ("test_audio.wav", audio_file, "audio/wav")},
-            data={"target_language": "eng", "voice": "en-US-John"}
+            files={"file": ("station.wav", audio_file, "audio/wav")},
+            data={"target_language": "eng", "voice": "en-US-GuyNeural"}
         )
 
     assert response.status_code == 200
@@ -31,20 +32,20 @@ def test_translate_audio_invalid_language(mock_audio_file):
     with open(mock_audio_file, "rb") as audio_file:
         response = client.post(
             "/translate/",
-            files={"file": ("test_audio.wav", audio_file, "audio/wav")},
-            data={"target_language": "xyz", "voice": "en-US-John"}
+            files={"file": ("station.wav", audio_file, "audio/wav")},
+            data={"target_language": "xyz", "voice": "en-US-GuyNeural"}
         )
 
     assert response.status_code == 200
-    assert response.json()["error"] == "Invalid target language. Supported languages are: ..."
+    assert response.json()["error"] == "Invalid target language. "
 
 def test_translate_audio_empty_target_language(mock_audio_file):
     # Test with an empty target language
     with open(mock_audio_file, "rb") as audio_file:
         response = client.post(
             "/translate/",
-            files={"file": ("test_audio.wav", audio_file, "audio/wav")},
-            data={"target_language": "", "voice": "en-US-John"}
+            files={"file": ("station.wav", audio_file, "audio/wav")},
+            data={"target_language": "", "voice": "en-US-GuyNeural"}
         )
 
     assert response.status_code == 200
@@ -55,7 +56,7 @@ def test_translate_audio_file_not_found():
     response = client.post(
         "/translate/",
         files={"file": ("non_existent_audio.wav", "fake_audio_data", "audio/wav")},
-        data={"target_language": "eng", "voice": "en-US-John"}
+        data={"target_language": "eng", "voice": "en-US-GuyNeural"}
     )
 
     assert response.status_code == 500
@@ -66,7 +67,7 @@ def test_translate_audio_invalid_file_format():
     response = client.post(
         "/translate/",
         files={"file": ("test_image.jpg", open("test_image.jpg", "rb"), "image/jpeg")},
-        data={"target_language": "eng", "voice": "en-US-John"}
+        data={"target_language": "eng", "voice": "en-US-GuyNeural"}
     )
 
     assert response.status_code == 422  # Unprocessable Entity (validation error)
@@ -77,10 +78,9 @@ def test_translate_audio_security_check():
     response = client.post(
         "/translate/",
         files={"file": ("malicious_file.txt", malicious_content, "text/plain")},
-        data={"target_language": "eng", "voice": "en-US-John"}
+        data={"target_language": "eng", "voice": "en-US-GuyNeural"}
     )
 
     assert response.status_code == 422  # Expect an error due to invalid file type
     assert "error" in response.json()
     assert "Invalid file" in response.json()["error"]
-
