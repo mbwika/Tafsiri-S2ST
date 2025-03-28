@@ -89,7 +89,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SERVER_HOST: ${{ secrets.SERVER_HOST }}
-    if: env.SERVER_HOST == 'localhost'
+    if: secrets.SERVER_HOST == 'localhost'
 
     steps:
       - name: Checkout Code
