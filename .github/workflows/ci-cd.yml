@@ -31,7 +31,8 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Backend Tests (if any)
-        run: pytest || echo "No tests found"
+        run: PYTHONPATH=backend pytest || echo "No tests found"
+        
 
   frontend:
     name: Frontend
