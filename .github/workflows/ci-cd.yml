@@ -96,7 +96,7 @@ jobs:
             echo "Deploying locally..."
             docker compose down
             docker compose up --build -d
-            curl -f http://localhost:8000/docs || exit 1
+            curl -f http://localhost:8008/docs || exit 1
           else
             echo "Deploying to remote server..."
             ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << EOF
