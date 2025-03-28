@@ -98,7 +98,7 @@ jobs:
           docker compose up --build -d
           curl -f http://localhost:8000/docs || exit 1
         
-      - name: Deploy to Remote Server
+      # - name: Deploy to Remote Server
         if: env.SERVER_HOST != 'localhost'
         uses: appleboy/ssh-action@v1.0.3
         with:
