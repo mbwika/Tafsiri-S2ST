@@ -22,19 +22,46 @@ RUN pip install watchgod
 # Install SeamlessM4T v2 model dependencies
 RUN pip install torch torchaudio transformers
 
-# Download and cache SeamlessM4T v2 model during build time
+# # Download and cache SeamlessM4T v2 model during build time
+# RUN python -c "from transformers import AutoProcessor, SeamlessM4TModel; \
+#     SeamlessM4TModel.from_pretrained('facebook/seamless-m4t-v2-large'); \
+#     AutoProcessor.from_pretrained('facebook/seamless-m4t-v2-large')"
+
+# # Copy the application code
+# COPY . .
+
+# # Expose FastAPI's default port
+# EXPOSE 8000
+
+# # Use Uvicorn with --reload for live-reloading (development mode)
+# CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+# Stage 1: Download and cache models separately
+FROM python:3.11.7 AS builder
+WORKDIR /cache
+RUN pip install torch torchaudio transformers
 RUN python -c "from transformers import AutoProcessor, SeamlessM4TModel; \
     SeamlessM4TModel.from_pretrained('facebook/seamless-m4t-v2-large'); \
     AutoProcessor.from_pretrained('facebook/seamless-m4t-v2-large')"
 
-# Copy the application code
+# Stage 2: Final image
+FROM python:3.11.7
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+RUN apt update && apt install -y ffmpeg && rm -rf /var/lib/apt/lists/*
+
+# Copy cached models from builder stage
+COPY --from=builder /root/.cache /root/.cache
+
+# Copy application code
 COPY . .
 
-# Expose FastAPI's default port
 EXPOSE 8000
-
-# Use Uvicorn with --reload for live-reloading (development mode)
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Uncomment the following lines if you want to use a different approach for development
 
 
 # # Use an official Python image for development
