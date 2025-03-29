@@ -145,7 +145,7 @@ async def translate_audio(file: UploadFile = File(...), target_language: str = F
         await communicate.save(output_audio_path)
 
         # Generate a publicly accessible URL for the translated audio file
-        download_url = f"http://localhost:8008/static/{os.path.basename(output_audio_path)}"
+        download_url = f"http://localhost:8000/static/{os.path.basename(output_audio_path)}"
 
         return {
             "translated_text": translated_text,
