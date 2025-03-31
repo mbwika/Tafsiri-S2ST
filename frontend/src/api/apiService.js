@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE = 'http://192.168.1.140:8000';
+const API_BASE = 'http://localhost:8000';
 
 export const uploadAudio = async (file, tgtLang, voice) => {
   const formData = new FormData();
