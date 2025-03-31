@@ -13,21 +13,29 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
+/* Ensure full-width layout */
 body {
   margin: 0;
   display: flex;
-  place-items: center;
-  min-width: 320px;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-width: 100vw;
   min-height: 100vh;
+}
+
+/* Allow full-width content */
+#root {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Make main content area flexible */
+.app-container {
+  width: 100%;
+  max-width: 1400px; /* Adjust as needed */
+  padding: 2rem;
 }
 
 h1 {
@@ -46,9 +54,11 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -66,7 +76,3 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
