@@ -5,7 +5,7 @@ const API_BASE = 'http://localhost:8000';
 export const uploadAudio = async (file, tgtLang, voice) => {
   const formData = new FormData();
   formData.append('file', file);
-  formData.append('target_language', tgtLang); // ✅ Corrected field name
+  formData.append('tgt_lang', tgtLang); // ✅ Corrected field name
   formData.append('voice', voice);
 
   return axios.post(`${API_BASE}/translate/`, formData, {
