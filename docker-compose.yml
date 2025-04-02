@@ -45,7 +45,7 @@ services:
       dockerfile: Dockerfile.dev  # Use the development Dockerfile
     container_name: frontend-dev
     ports:
-      - "3000:3000"
+      - "3000:80"
     volumes:
       - ./frontend:/app  # Mount the frontend code for live reloading
     depends_on:
