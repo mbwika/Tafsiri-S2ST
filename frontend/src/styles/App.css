@@ -10,6 +10,20 @@
   gap: 1.5rem;
 }
 
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.rotate-logo {
+  animation: spin 10s linear infinite;
+}
+
+
 .file-upload-group {
   margin: 1rem 0;
 }

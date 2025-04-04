@@ -1,10 +1,12 @@
+// File: frontend/src/App.jsx
 import { useState } from 'react';
 import StatusDisplay from './components/StatusDisplay';
 import ThemeToggle from './components/ThemeToggle';
 import LanguageSelector from './components/LanguageSelector';
 import './styles/App.css';
 import './styles/theme.css';
-import OrgLogo from './assets/Artscilab_logo2.png'; // Import your logo
+import OrgLogo from './assets/utd-logo.png';
+import LabLogo from './assets/artscilab-logo.png'; // Import your logo
 
 export default function App() {
   const [taskId, setTaskId] = useState(null);
@@ -18,8 +20,11 @@ export default function App() {
       <div className="app-content">
       <header className="app-header">
         <div className="header-content">
+        <a href="https://utdallas.edu/" target="_blank" rel="noopener noreferrer">
+          <img src={OrgLogo} alt="UTD Logo" className="logo rotate-logo" />
+        </a>
         <a href="https://artscilab.utdallas.edu/" target="_blank" rel="noopener noreferrer">
-          <img src={OrgLogo} alt="Artscilab Logo" className="logo" />
+          <img src={LabLogo} alt="Artscilab Logo" className="logo" />
         </a>
           <div className="title-container">
             <h1>TAFSIRI</h1>
@@ -50,7 +55,7 @@ export default function App() {
         </div>
 
         <footer className="app-footer">
-          <p>Powered by SeamlessM4T</p>
+          <p>Powered by SeamlessM4T + Edge TTS</p>
         </footer>
       </div>
     </div>

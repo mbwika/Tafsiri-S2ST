@@ -67,3 +67,11 @@ protobuf==3.20.3
 pytest==7.0.1
 python-multipart==0.0.5
 httpx
+llvmlite
+backports.tarfile
+importlib-metadata
+jaraco.collections
+librosa
+pip-chill
+pydub
+tomli
