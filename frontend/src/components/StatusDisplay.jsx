@@ -1,3 +1,4 @@
+// StatusDisplay.jsx
 import { useEffect, useState } from 'react';
 import { checkStatus, downloadAudio } from '../api/apiService';
 
@@ -19,6 +20,33 @@ export default function StatusDisplay({ taskId, onNewTranslation }) {
   const [status, setStatus] = useState(null);
   const [audioUrl, setAudioUrl] = useState(null);
   const [error, setError] = useState(null);
+
+  // useEffect(() => {
+  //   if (!taskId) return;
+  
+  //   const interval = setInterval(async () => {
+  //     try {
+  //       const response = await checkStatus(taskId);
+  //       console.log("Status Response:", response.data);  // Log the response to ensure correct status
+  //       setStatus(response.data);
+  
+  //       // Stop polling if failed or completed
+  //       if (response.data.status === 'failed' || response.data.status === 'completed') {
+  //         clearInterval(interval);
+  //         if (response.data.status === 'failed') {
+  //           setError(response.data.error || 'Translation failed');
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.error('Status check failed:', error);
+  //       clearInterval(interval);
+  //       setError('Failed to check translation status');
+  //     }
+  //   }, 1000);
+  
+  //   return () => clearInterval(interval);
+  // }, [taskId]);
+  
 
   useEffect(() => {
     if (!taskId) return;

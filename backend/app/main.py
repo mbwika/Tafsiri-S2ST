@@ -1,157 +1,196 @@
 # main.py
 
-from fastapi import FastAPI, File, UploadFile, Form, HTTPException
-from pydantic import BaseModel
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException, BackgroundTasks
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.middleware.cors import CORSMiddleware 
 import torch
-import torchaudio
-import os
-import asyncio
 from transformers import AutoProcessor, AutoModelForSpeechSeq2Seq
+import torchaudio
 import edge_tts
-import logging
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
+import asyncio
+import textwrap
+from pydub import AudioSegment
+from pydub.silence import split_on_silence
+import os
+from tempfile import NamedTemporaryFile
+from typing import Dict
+import uuid
 
-
-# Initialize FastAPI
 app = FastAPI()
 
-# Enable CORS for frontend access
+# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Change this to your frontend URL
+    allow_origins=["*"],  # Allows all origins
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all HTTP methods (GET, POST, etc.)
-    allow_headers=["*"],  # Allows all headers, including Content-Type
-    expose_headers=["Content-Disposition"]  # Ensure file downloads work correctly
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
 )
 
-# Ensure the upload directory exists
-UPLOAD_DIR = "uploads"
-os.makedirs(UPLOAD_DIR, exist_ok=True)
+# Load SeamlessM4T model
+model_id = "facebook/seamless-m4t-v2-large"
+processor = AutoProcessor.from_pretrained(model_id)
+model = AutoModelForSpeechSeq2Seq.from_pretrained(model_id)
 
-# Serve static files from the "uploads" directory
-app.mount("/static", StaticFiles(directory="uploads"), name="static")
+# Move model to GPU if available
+device = "cuda" if torch.cuda.is_available() else "cpu"
+model = model.to(device)
 
-# Load SeamlessM4T Model
-MODEL_ID = "facebook/seamless-m4t-v2-large"
-processor = AutoProcessor.from_pretrained(MODEL_ID)
-model = AutoModelForSpeechSeq2Seq.from_pretrained(MODEL_ID).to("cuda" if torch.cuda.is_available() else "cpu")
+# Dictionary to track progress and store file paths
+processing_status: Dict[str, Dict] = {}
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# Directory to store output files
+OUTPUT_DIR = "output_files"
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# Define data model for request
-class TranslationRequest(BaseModel):
-    target_language: str
-    voice: str
-
-# Upload directory
-UPLOAD_DIR = "uploads"
-os.makedirs(UPLOAD_DIR, exist_ok=True)
-
+# Function to load and process audio
 def load_audio(file_path):
-    # Load the audio file
-    waveform, sample_rate = torchaudio.load(file_path)
-
-    try:
-        waveform, sample_rate = torchaudio.load(file_path)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error opening '{file_path}': {str(e)}")
-    
-    # Ensure mono if stereo (convert to single channel)
-    if waveform.shape[0] > 1:  # If there are multiple channels (e.g., stereo)
-        waveform = waveform.mean(dim=0, keepdim=True)  # Convert to mono by averaging channels
-
-    # Resample the audio to 16000 Hz if necessary
+    speech_array, sample_rate = torchaudio.load(file_path)
     if sample_rate != 16000:
-        waveform = torchaudio.transforms.Resample(orig_freq=sample_rate, new_freq=16000)(waveform)
-    
-    return waveform  # Return only the waveform tensor
+        speech_array = torchaudio.transforms.Resample(orig_freq=sample_rate, new_freq=16000)(speech_array)
+    return speech_array.squeeze(0)
 
-VALID_LANGUAGES = [
-    'afr', 'amh', 'arb', 'ary', 'arz', 'asm', 'azj', 'bel', 'ben', 'bos', 'bul', 
-    'cat', 'ceb', 'ces', 'ckb', 'cmn', 'cmn_Hant', 'cym', 'dan', 'deu', 'ell', 'eng', 
-    'est', 'eus', 'fin', 'fra', 'fuv', 'gaz', 'gle', 'glg', 'guj', 'heb', 'hin', 'hrv', 
-    'hun', 'hye', 'ibo', 'ind', 'isl', 'ita', 'jav', 'jpn', 'kan', 'kat', 'kaz', 'khk', 
-    'khm', 'kir', 'kor', 'lao', 'lit', 'lug', 'luo', 'lvs', 'mai', 'mal', 'mar', 'mkd', 
-    'mlt', 'mni', 'mya', 'nld', 'nno', 'nob', 'npi', 'nya', 'ory', 'pan', 'pbt', 'pes', 
-    'pol', 'por', 'ron', 'rus', 'sat', 'slk', 'slv', 'sna', 'snd', 'som', 'spa', 'srp', 
-    'swe', 'swh', 'tam', 'tel', 'tgk', 'tgl', 'tha', 'tur', 'ukr', 'urd', 'uzn', 'vie', 
-    'yor', 'yue', 'zlm', 'zul'
-]
+# Function to split audio into chunks
+def split_audio(file_path, silence_threshold=-40, min_silence_len=500):
+    audio = AudioSegment.from_file(file_path)
+    chunks = split_on_silence(
+        audio,
+        silence_thresh=silence_threshold,  # Silence threshold in dB
+        min_silence_len=min_silence_len,  # Minimum silence length in ms
+        keep_silence=500  # Keep some silence at the beginning/end of chunks
+    )
+    return chunks
 
+# Function for text-to-speech using Edge-TTS
+async def text_to_speech(text, output_path, voice):
+    sentences = textwrap.wrap(text, width=290)  # Split long text into chunks
+    audio_segments = []
+    for i, sentence in enumerate(sentences):
+        segment_path = f"segment_{i}.mp3"
+        tts = edge_tts.Communicate(sentence, voice)
+        await tts.save(segment_path)
+        audio_segments.append(segment_path)
 
-ALLOWED_AUDIO_EXTENSIONS = ['.wav', '.mp3', '.flac', '.m4a', '.ogg', '.opus', '.amr', '.awb', '.aac', '.wma'] 
+    # Merge all segments into the final output
+    combined = AudioSegment.empty()
+    for segment in audio_segments:
+        combined += AudioSegment.from_file(segment)
+    combined.export(output_path, format="mp3")
 
-def is_valid_audio_file(file: UploadFile):
-    # Check file extension
-    file_extension = os.path.splitext(file.filename)[1].lower()
-    if file_extension not in ALLOWED_AUDIO_EXTENSIONS:
-        return False
-    # Check MIME type
-    if not file.content_type.startswith('audio/'):
-        return False
-    return True
+    # Clean up temporary segment files
+    for segment in audio_segments:
+        os.remove(segment)
 
-@app.post("/translate/")
-async def translate_audio(file: UploadFile = File(...), target_language: str = Form(...), voice: str = Form(...)):
+# Background task to process audio
+async def process_audio(file_path, output_path, tgt_lang, voice, task_id):
     try:
-        # Check if target_language is empty
-        if not target_language:
-            logger.error("Target language is empty")
-            return {"error": "Target language cannot be empty"}
-        
-        # Log the received target_language
-        logger.info(f"Received target_language: {target_language}")
-        
-        # Validate the target_language
-        if target_language not in VALID_LANGUAGES:
-            logger.error(f"Invalid target language: {target_language}")
-            return {"error": f"Invalid target language. Supported languages are: {', '.join(VALID_LANGUAGES)}"}
+        # Split the audio into chunks
+        chunks = split_audio(file_path)
+        processing_status[task_id] = {"progress": 0, "total_chunks": len(chunks), "status": "processing"}
 
-        # Check if the uploaded file is a valid audio file
-        if not is_valid_audio_file(file):
-            logger.error(f"Invalid file type for {file.filename}. Only audio files are allowed.")
-            raise HTTPException(status_code=400, detail="Invalid file type. Only audio files with extensions .wav, .mp3, .flac are allowed.")
+        # Translate each chunk and combine the results
+        combined_audio = AudioSegment.empty()
+        translated_text = ""
+        for i, chunk in enumerate(chunks):
+            # Save the chunk to a temporary file
+            chunk_path = f"chunk_{i}.wav"
+            chunk.export(chunk_path, format="wav")
 
-        # Save the uploaded file
-        file_path = os.path.join(UPLOAD_DIR, file.filename)
-        with open(file_path, "wb") as audio_file:
-            audio_file.write(await file.read())
-        logger.info(f"File saved at {file_path}")
+            # Load and process the chunk
+            audio_waveform = load_audio(chunk_path)
+            inputs = processor(audios=[audio_waveform], sampling_rate=16000, return_tensors="pt").to(device)
 
-        # Load audio
-        waveform = load_audio(file_path)
+            # Step 1: Speech-to-Text Translation (S2TT)
+            with torch.no_grad():
+                output = model.generate(**inputs, tgt_lang=tgt_lang)
 
-        # Prepare inputs for processor
-        inputs = processor(audios=[waveform], sampling_rate=16000, return_tensors="pt").to("cuda" if torch.cuda.is_available() else "cpu")
-        
-        if "input_features" not in inputs:
-            logger.error("Processor output missing 'input_features'")
-            return {"error": "Invalid audio processing"}
+            # Decode the generated text
+            chunk_translated_text = processor.batch_decode(output, skip_special_tokens=True)[0]
+            translated_text += chunk_translated_text + " "
 
-        logger.info(f"Audio input tensor shape: {inputs['input_features'].shape}")
+            # Step 2: Text-to-Speech with Edge-TTS
+            chunk_audio_path = f"chunk_translated_{i}.mp3"
+            await text_to_speech(chunk_translated_text, chunk_audio_path, voice)
 
-        # Perform translation
-        translated_output = model.generate(inputs["input_features"], tgt_lang=target_language)
-        translated_text = processor.batch_decode(translated_output, skip_special_tokens=True)[0]
-        logger.info(f"Translated Text: {translated_text}")
+            # Add the translated chunk to the combined audio
+            combined_audio += AudioSegment.from_file(chunk_audio_path)
 
-        # Generate speech output using Edge TTS
-        output_audio_path = os.path.join(UPLOAD_DIR, "translated_audio.mp3")
-        communicate = edge_tts.Communicate(translated_text, voice)
-        await communicate.save(output_audio_path)
+            # Update progress
+            processing_status[task_id]["progress"] = i + 1
 
-        # Generate a publicly accessible URL for the translated audio file
-        download_url = f"http://localhost:8000/static/{os.path.basename(output_audio_path)}"
+            # Clean up temporary files
+            os.remove(chunk_path)
+            os.remove(chunk_audio_path)
 
-        return {
-            "translated_text": translated_text,
-            "download_link": download_url  # Provide the download link for the audio file
-        }
+        # Save the combined translated audio
+        combined_audio.export(output_path, format="mp3")
 
+        # Update status
+        processing_status[task_id]["status"] = "completed"
+        processing_status[task_id]["output_file"] = output_path
+        processing_status[task_id]["translated_text"] = translated_text.strip()
     except Exception as e:
-        logger.error(f"Error during translation: {e}", exc_info=True)
-        return {"error": str(e)}
+        processing_status[task_id]["status"] = "failed"
+        processing_status[task_id]["error"] = str(e)
+    finally:
+        # Clean up temporary files
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+# API endpoint to submit audio for translation
+@app.post("/translate/")
+async def translate_speech(
+    file: UploadFile = File(...),
+    tgt_lang: str = Form(...),
+    voice: str = Form(...),
+    background_tasks: BackgroundTasks = BackgroundTasks()
+):
+    try:
+        # Generate a unique task ID
+        task_id = str(uuid.uuid4())
+
+        # Save the uploaded file temporarily
+        file_name = file.filename
+        output_file_name = f"{OUTPUT_DIR}/translated_{task_id}.mp3"
+        with NamedTemporaryFile(delete=False, suffix=".wav") as temp_file:
+            temp_file.write(await file.read())
+            temp_file_path = temp_file.name
+
+        # Add the task to the background
+        background_tasks.add_task(process_audio, temp_file_path, output_file_name, tgt_lang, voice, task_id)
+
+        # Return acknowledgment
+        return JSONResponse(
+            status_code=202,
+            content={
+                "message": "Audio file received and processing started.",
+                "task_id": task_id,
+                "output_file": output_file_name
+            }
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# API endpoint to check status
+@app.get("/status/{task_id}")
+async def check_status(task_id: str):
+    if task_id not in processing_status:
+        raise HTTPException(status_code=404, detail="Task ID not found.")
+    return processing_status[task_id]
+
+# API endpoint to download the translated file
+@app.get("/download/{task_id}")
+async def download_file(task_id: str):
+    if task_id not in processing_status:
+        raise HTTPException(status_code=404, detail="Task ID not found.")
+    
+    output_file = processing_status[task_id].get("output_file")
+    if not output_file or not os.path.exists(output_file):
+        raise HTTPException(status_code=404, detail="File not found.")
+
+    return FileResponse(output_file, media_type="audio/mpeg", filename=f"translated_{task_id}.mp3")
+
+# Run the API
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
