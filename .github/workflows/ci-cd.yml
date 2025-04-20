@@ -60,6 +60,14 @@ jobs:
     needs: [backend, frontend]
     if: github.ref == 'refs/heads/main'
     steps:
+      - name: Free up disk space
+        run: |
+          docker system prune -af
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+
       - name: Checkout Repository
         uses: actions/checkout@v4
 
@@ -76,10 +84,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Prune Docker system
-        run: |
-          docker system prune -af
 
       - name: Build and Push Docker Images
         run: |
