@@ -10,6 +10,11 @@ import LabLogo from './assets/artscilab-logo.png'; // Import your logo
 
 export default function App() {
   const [taskId, setTaskId] = useState(null);
+  const [isTranslationReady, setIsTranslationReady] = useState(false);
+
+  // const handleNewTranslation = () => {
+  //   setIsTranslationReady(true);
+  // };
 
   const handleNewTranslation = () => {
     setTaskId(null); // Clear previous translation
@@ -18,44 +23,44 @@ export default function App() {
   return (
     <div className="app-container">
       <div className="app-content">
-      <header className="app-header">
-        <div className="header-content">
-        <a href="https://utdallas.edu/" target="_blank" rel="noopener noreferrer">
-          <img src={OrgLogo} alt="UTD Logo" className="logo rotate-logo" />
-        </a>
-        <a href="https://artscilab.utdallas.edu/" target="_blank" rel="noopener noreferrer">
-          <img src={LabLogo} alt="Artscilab Logo" className="logo" />
-        </a>
-          <div className="title-container">
-            <h1>TAFSIRI</h1>
-            <div className="subtitle">Seamless Podcast Translation</div>
-          </div>
-          <div className="theme-toggle-wrapper">
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
-
-        <div className="main-card">
-          <section className="upload-section">
-            <h2>Audio Translation</h2>
-            <p className="instruction-text">
+      <div className="theme-toggle-wrapper">
+              <ThemeToggle />
+            </div>
+        <header className="app-header">
+          <div className="header-content">
+            <a href="https://utdallas.edu/" target="_blank" rel="noopener noreferrer">
+              <img src={OrgLogo} alt="UTD Logo" className="logo rotate-logo" />
+            </a>
+            <a href="https://artscilab.utdallas.edu/" target="_blank" rel="noopener noreferrer">
+              <img src={LabLogo} alt="Artscilab Logo" className="logo" />
+            </a>
+            <div className="title-container">
+              <h1>TAFSIRI</h1>
+              <div className="subtitle">A Speech-to-Speech Translator (S2ST)</div>
+              <p className='instruction-text'>  
               Upload an audio file and select target language to begin translation
             </p>
+            </div>
             
+          </div>
+        </header>
+
+      <div className="main-card">
+        <div className={`flex flex-col gap-4 w-full ${taskId ? 'md:flex-row' : ''}`}>
+          <section className={`w-full ${taskId ? 'md:w-1/2' : 'w-full'}`}>
             <LanguageSelector onUploadSuccess={setTaskId} />
           </section>
 
           {taskId && (
-            <section className="status-section">
-              <StatusDisplay taskId={taskId} 
-              onNewTranslation={handleNewTranslation}/>
+            <section className="w-full md:w-1/2">
+              <StatusDisplay taskId={taskId} onNewTranslation={handleNewTranslation} />
             </section>
           )}
         </div>
+      </div>
 
         <footer className="app-footer">
-          <p>Powered by SeamlessM4T + Edge TTS</p>
+          <p class="">© 2025 <a href="https://artscilab.utdallas.edu/"> ArtSciLab</a>. The University of Texas at Dallas (UTD).</p>
         </footer>
       </div>
     </div>
