@@ -29,7 +29,7 @@ const languages = [
   },
   {
     languageName: "Amharic",
-    languageCode: "am-ET",
+    languageCode: "amh",
     voices: ["am-ET-AmehaNeural", "am-ET-MekdesNeural"],
   },
   {
@@ -48,70 +48,55 @@ const languages = [
   },
   {
     languageName: "Azerbaijani",
-    languageCode: "az-AZ",
+    languageCode: "azj",
     voices: ["az-AZ-BabekNeural", "az-AZ-BanuNeural"],
   },
   {
     languageName: "Bulgarian",
-    languageCode: "bg-BG",
+    languageCode: "bul",
     voices: ["bg-BG-BorislavNeural", "bg-BG-KalinaNeural"],
   },
   {
-    languageName: "Bengali (Bangladesh)",
-    languageCode: "bn-BD",
-    voices: ["bn-BD-NabanitaNeural", "bn-BD-PradeepNeural"],
-  },
-  {
-    languageName: "Bengali (India)",
-    languageCode: "bn-IN",
-    voices: ["bn-IN-BashkarNeural", "bn-IN-TanishaaNeural"],
+    languageName: "Bengali",
+    languageCode: "ben",
+    voices: ["bn-BD-NabanitaNeural", "bn-BD-PradeepNeural", "bn-IN-BashkarNeural", "bn-IN-TanishaaNeural"],
   },
   {
     languageName: "Bosnian",
-    languageCode: "bs-BA",
+    languageCode: "bos",
     voices: ["bs-BA-GoranNeural", "bs-BA-VesnaNeural"],
   },
   {
     languageName: "Catalan",
-    languageCode: "ca-ES",
+    languageCode: "cat",
     voices: ["ca-ES-EnricNeural", "ca-ES-JoanaNeural"],
   },
   {
     languageName: "Czech",
-    languageCode: "cs-CZ",
+    languageCode: "ces",
     voices: ["cs-CZ-AntoninNeural", "cs-CZ-VlastaNeural"],
   },
   {
     languageName: "Welsh",
-    languageCode: "cy-GB",
+    languageCode: "cym",
     voices: ["cy-GB-AledNeural", "cy-GB-NiaNeural"],
   },
   {
     languageName: "Danish",
-    languageCode: "da-DK",
+    languageCode: "dan",
     voices: ["da-DK-ChristelNeural", "da-DK-JeppeNeural"],
   },
   {
-    languageName: "German (Austria)",
-    languageCode: "de-AT",
-    voices: ["de-AT-IngridNeural", "de-AT-JonasNeural"],
-  },
-  {
-    languageName: "German (Switzerland)",
-    languageCode: "de-CH",
-    voices: ["de-CH-JanNeural", "de-CH-LeniNeural"],
-  },
-  {
-    languageName: "German (Germany)",
-    languageCode: "de-DE",
-    voices: [
+    languageName: "German",
+    languageCode: "deu",
+    voices: ["de-AT-IngridNeural", "de-AT-JonasNeural", "de-CH-JanNeural", "de-CH-LeniNeural",
       "de-DE-AmalaNeural", "de-DE-ConradNeural", "de-DE-FlorianMultilingualNeural",
       "de-DE-KatjaNeural", "de-DE-KillianNeural", "de-DE-SeraphinaMultilingualNeural"
     ],
   },
   {
     languageName: "Greek",
-    languageCode: "el-GR",
+    languageCode: "ell",
     voices: ["el-GR-AthinaNeural", "el-GR-NestorasNeural"],
   },
   {
@@ -135,8 +120,13 @@ const languages = [
     voices: ["et-EE-AnuNeural", "et-EE-KertNeural"],
   },
   {
+    languageName: "Kamba",//Sp (Source Speech) Only
+    languageCode: "kam",
+    voices: ["sw-KE-Mwende", "sw-KE-Musyoki"],
+  },
+  {
     languageName: "Persian",
-    languageCode: "fas",
+    languageCode: "pes",
     voices: ["fa-IR-DilaraNeural", "fa-IR-FaridNeural"],
   },
   {
@@ -145,78 +135,78 @@ const languages = [
     voices: ["fi-FI-HarriNeural", "fi-FI-NooraNeural"],
   },
   {
-    languageName: "Filipino",
-    languageCode: "fil",
-    voices: ["fil-PH-AngeloNeural", "fil-PH-BlessicaNeural"],
+    languageName: "Luo", //S2TT Only
+    languageCode: "luo",
+    voices: ["sw-KE-Atieno", "sw-KE-Otieno"],
   },
   {
     languageName: "Irish",
-    languageCode: "ga-IE",
+    languageCode: "gle",
     voices: ["ga-IE-ColmNeural", "ga-IE-OrlaNeural"],
   },
   {
     languageName: "Galician",
-    languageCode: "gl-ES",
+    languageCode: "glg",
     voices: ["gl-ES-RoiNeural", "gl-ES-SabelaNeural"],
   },
   {
     languageName: "Gujarati",
-    languageCode: "gu-IN",
+    languageCode: "guj",
     voices: ["gu-IN-DhwaniNeural", "gu-IN-NiranjanNeural"],
   },
   {
     languageName: "Hebrew",
-    languageCode: "he-IL",
+    languageCode: "heb",
     voices: ["he-IL-AvriNeural", "he-IL-HilaNeural"],
   },
   {
     languageName: "Hindi",
-    languageCode: "hi-IN",
+    languageCode: "hin",
     voices: ["hi-IN-MadhurNeural", "hi-IN-SwaraNeural"],
   },
   {
     languageName: "Croatian",
-    languageCode: "hr-HR",
+    languageCode: "hrv",
     voices: ["hr-HR-GabrijelaNeural", "hr-HR-SreckoNeural"],
   },
   {
     languageName: "Hungarian",
-    languageCode: "hu-HU",
+    languageCode: "hun",
     voices: ["hu-HU-NoemiNeural", "hu-HU-TamasNeural"],
   },
   {
     languageName: "Indonesian",
-    languageCode: "id-ID",
+    languageCode: "ind",
     voices: ["id-ID-ArdiNeural", "id-ID-GadisNeural"],
   },
   {
     languageName: "Icelandic",
-    languageCode: "is-IS",
+    languageCode: "isl",
     voices: ["is-IS-GudrunNeural", "is-IS-GunnarNeural"],
   },
   {
     languageName: "Italian",
-    languageCode: "it-IT",
+    languageCode: "ita",
     voices: ["it-IT-DiegoNeural", "it-IT-ElsaNeural", "it-IT-GiuseppeMultilingualNeural", "it-IT-IsabellaNeural"],
   },
   {
     languageName: "Japanese",
-    languageCode: "ja-JP",
+    languageCode: "jpn",
     voices: ["ja-JP-KeitaNeural", "ja-JP-NanamiNeural"],
   },
   {
     languageName: "Javanese",
-    languageCode: "jv-ID",
+    languageCode: "jav",
     voices: ["jv-ID-DimasNeural", "jv-ID-SitiNeural"],
   },
   {
     languageName: "Georgian",
-    languageCode: "ka-GE",
+    languageCode: "kat",
     voices: ["ka-GE-EkaNeural", "ka-GE-GiorgiNeural"],
   },
   {
     languageName: "Kazakh",
-    languageCode: "kk-KZ",
+    languageCode: "kaz",
     voices: ["kk-KZ-AigulNeural", "kk-KZ-DauletNeural"],
   },
   {
@@ -226,62 +216,62 @@ const languages = [
   },
   {
     languageName: "Lithuanian",
-    languageCode: "lt-LT",
+    languageCode: "lit",
     voices: ["lt-LT-LeonasNeural", "lt-LT-OnaNeural"],
   },
   {
     languageName: "Latvian",
-    languageCode: "lv-LV",
+    languageCode: "lvs",
     voices: ["lv-LV-EveritaNeural", "lv-LV-NilsNeural"],
   },
   {
     languageName: "Maltese",
-    languageCode: "mt-MT",
+    languageCode: "mlt",
     voices: ["mt-MT-GraceNeural", "mt-MT-JosephNeural"],
   },
   {
     languageName: "Portuguese (Brazilian)",
-    languageCode: "pt-BR",
+    languageCode: "por",
     voices: ["pt-BR-AntonioNeural", "pt-BR-FranciscaNeural", "pt-BR-ThalitaMultilingualNeural"],
   },
   {
     languageName: "Portuguese (Portugal)",
-    languageCode: "pt-PT",
+    languageCode: "por",
     voices: ["pt-PT-DuarteNeural", "pt-PT-RaquelNeural"],
   },
   {
     languageName: "Russian",
-    languageCode: "ru-RU",
+    languageCode: "rus",
     voices: ["ru-RU-DmitryNeural", "ru-RU-SvetlanaNeural"],
   },
   {
     languageName: "Turkish",
-    languageCode: "tr-TR",
+    languageCode: "tur",
     voices: ["tr-TR-AhmetNeural", "tr-TR-EmelNeural"],
   },
   {
     languageName: "Ukrainian",
-    languageCode: "uk-UA",
+    languageCode: "ukr",
     voices: ["uk-UA-OstapNeural", "uk-UA-PolinaNeural"],
   },
   {
     languageName: "Vietnamese",
-    languageCode: "vi-VN",
+    languageCode: "vie",
     voices: ["vi-VN-HoaiMyNeural", "vi-VN-NamMinhNeural"],
   },
   {
     languageName: "Chinese (Simplified)",
-    languageCode: "zh-CN",
+    languageCode: "cmn",
     voices: ["zh-CN-XiaoxiaoNeural", "zh-CN-YunjianNeural", "zh-CN-YunxiNeural"],
   },
   {
     languageName: "Chinese (Traditional, Hong Kong)",
-    languageCode: "zh-HK",
+    languageCode: "cmn_Hant",
     voices: ["zh-HK-HiuGaaiNeural", "zh-HK-WanLungNeural"],
   },
   {
     languageName: "Zulu",
-    languageCode: "zu-ZA",
+    languageCode: "zul",
     voices: ["zu-ZA-ThandoNeural", "zu-ZA-ThembaNeural"],
   }
 ];
@@ -364,7 +354,8 @@ const LanguageSelector = ({ onUploadSuccess }) => {
       </div>
 
       <div className="file-upload-container">
-        <label className="file-upload-label">
+        <label className="select-label">Drop or Choose a File</label>
+        <label className="">
           <input
             type="file"
             accept="audio/*"
@@ -387,18 +378,28 @@ const LanguageSelector = ({ onUploadSuccess }) => {
 
       {/* Audio player for preview */}
       {audioUrl && (
-        <div className="--accent-color flex flex-col items-center justify-center w-full mt-5">
-          <h4 className="--accent-color text-lg font-semibold mb-2">Preview: Original Audio</h4>
-          <audio controls className="--accent-color w-4/5 max-w-2xl">
+        <div className="audio-player-container">
+          <label className="select-label">Preview: Original Audio</label>
+          <audio controls className="audio-player">
             <source src={audioUrl} />
             Your browser does not support the audio element.
           </audio>
         </div>
       )}
 
-
-      <button type="submit" className="submit-button" disabled={!file || isUploading}>
-        {isUploading ? 'Uploading...' : 'Start Translation'}
+      <button type="submit" className="submit-button flex gap-2 justify-center px-4 py-2" disabled={!file || isUploading}>
+        <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        className="h-6 w-6" 
+        fill="none" 
+        viewBox="0 0 24 24" 
+        stroke="currentColor">
+          <path 
+          strokeLinecap="round" 
+          strokeLinejoin="round" 
+          strokeWidth={2} d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M16 8l-4-4m0 0L8 8m4-4v12" />
+        </svg>
+        {isUploading ? 'Uploading...': 'Start Translation'}
       </button>
     </form>
   );

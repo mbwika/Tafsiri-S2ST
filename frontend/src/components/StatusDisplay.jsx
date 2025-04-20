@@ -4,10 +4,10 @@ import { checkStatus, downloadAudio } from '../api/apiService';
 
 const ProgressBar = ({ progress, total }) => {
   const percentage = Math.round((progress / (total || 1)) * 100);
-  
+
   return (
     <div className="progress-bar-container">
-      <div 
+      <div
         className="progress-bar-fill"
         style={{ width: `${percentage}%` }}
       ></div>
@@ -21,32 +21,6 @@ export default function StatusDisplay({ taskId, onNewTranslation }) {
   const [audioUrl, setAudioUrl] = useState(null);
   const [error, setError] = useState(null);
 
-  // useEffect(() => {
-  //   if (!taskId) return;
-  
-  //   const interval = setInterval(async () => {
-  //     try {
-  //       const response = await checkStatus(taskId);
-  //       console.log("Status Response:", response.data);  // Log the response to ensure correct status
-  //       setStatus(response.data);
-  
-  //       // Stop polling if failed or completed
-  //       if (response.data.status === 'failed' || response.data.status === 'completed') {
-  //         clearInterval(interval);
-  //         if (response.data.status === 'failed') {
-  //           setError(response.data.error || 'Translation failed');
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.error('Status check failed:', error);
-  //       clearInterval(interval);
-  //       setError('Failed to check translation status');
-  //     }
-  //   }, 1000);
-  
-  //   return () => clearInterval(interval);
-  // }, [taskId]);
-  
 
   useEffect(() => {
     if (!taskId) return;
@@ -55,13 +29,13 @@ export default function StatusDisplay({ taskId, onNewTranslation }) {
       try {
         const response = await checkStatus(taskId);
         setStatus(response.data);
-        
+
         // Stop polling if failed or completed
         if (response.data.status === 'failed') {
           clearInterval(interval);
           setError(response.data.error || 'Translation failed');
         }
-        
+
         if (response.data.status === 'completed') {
           clearInterval(interval);
           const audioResponse = await downloadAudio(taskId);
@@ -94,8 +68,8 @@ export default function StatusDisplay({ taskId, onNewTranslation }) {
       {error ? (
         <div className="error-message">
           <h3>Translation Error</h3>
-          <p style={{color: 'black'}}>{error}</p>
-          <button 
+          <p style={{ color: 'black' }}>{error}</p>
+          <button
             onClick={() => {
               setError(null);
               onNewTranslation?.();
@@ -108,36 +82,67 @@ export default function StatusDisplay({ taskId, onNewTranslation }) {
       ) : (
         <>
           <div className="progress-section">
-            <h3>Translation Progress</h3>
-            <ProgressBar 
-              progress={status.progress} 
-              total={status.total_chunks} 
-            />
-            <p className="status-text">
-              {status.status === 'processing' 
+            <label className="select-label">
+              Translation Progress:&nbsp;
+              {status.status === 'Processing'
                 ? `Processing chunk ${status.progress} of ${status.total_chunks}`
                 : status.status}
-            </p>
+            </label>
+            <ProgressBar
+              progress={status.progress}
+              total={status.total_chunks}
+            />
           </div>
 
           {status.translated_text && (
             <div className="translation-result">
-              <h4>Translated Text</h4>
-              <p>{status.translated_text}</p>
+              <label className="select-label">Translated Text</label>
+              <div className="translated-text-container">
+                <p>{status.translated_text}</p>
+              </div>
             </div>
           )}
 
           {audioUrl && (
             <div className="audio-player-container">
-              <h4>Translated Audio</h4>
-              <audio 
-                controls 
-                src={audioUrl} 
+              <label className="select-label">Play: Translated Audio</label>
+              <audio
+                controls
+                src={audioUrl}
                 className="audio-player"
                 onEnded={() => URL.revokeObjectURL(audioUrl)}
               />
             </div>
+
           )}
+          {/* <div className="action-buttons"> */}
+          <div>
+            {audioUrl && (
+                <button className="submit-button px-4 py-2 text-white">
+                <a
+                  href={`http://localhost:8000/download/${taskId}`}
+                  download
+                  className="flex justify-center gap-2"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4"
+                    />
+                  </svg>
+                  <span className="button-label">Download Translated Audio</span>
+                </a>
+              </button>             
+            )}
+          </div>
         </>
       )}
     </div>

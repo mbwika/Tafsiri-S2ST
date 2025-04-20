@@ -1,4 +1,16 @@
-@import "tailwindcss";
+
+/*``````css
+/* Ensure Tailwind CSS directives are included */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  /* Ensure Tailwind CSS is configured properly for @apply to work */
+  @apply bg-no-repeat bg-cover bg-center min-h-screen;
+  background-image: url("/wallpaper.png");
+  color: #ffff;
+}
 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -15,30 +27,21 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Ensure full-width layout */
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
 body {
   margin: 0;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  min-width: 100vw;
+  place-items: center;
+  min-width: 320px;
   min-height: 100vh;
-}
-
-/* Allow full-width content */
-#root {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-/* Make main content area flexible */
-.app-container {
-  width: 90%;
-  max-width: 1400px; /* Adjust as needed */
-  padding: 1rem;
-
 }
 
 h1 {
@@ -57,11 +60,9 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
-
 button:hover {
   border-color: #646cff;
 }
-
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
