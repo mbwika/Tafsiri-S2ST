@@ -12,7 +12,7 @@ edge-tts==7.0.0
 fastapi==0.115.11
 filelock==3.18.0
 frozenlist==1.5.0
-fsspec==2025.3.0
+fsspec
 h11==0.14.0
 huggingface-hub==0.29.3
 idna==3.10
@@ -75,5 +75,4 @@ librosa
 pip-chill
 pydub
 tomli
-# SeamlessM4T core (from Meta's GitHub)
-git+https://github.com/facebookresearch/seamless_communication.git
+
