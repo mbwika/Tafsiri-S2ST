@@ -46,7 +46,7 @@ jobs:
       - name: Set Up Node.js Environment
         uses: actions/setup-node@v4
         with:
-          node-version: '23-slim'
+          node-version: '23'
 
       - name: Install Frontend Dependencies
         run: npm install
