@@ -78,7 +78,8 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Prune Docker system
-        run: docker system prune -af
+        run: |
+          docker system prune -af
 
       - name: Build and Push Docker Images
         run: |
