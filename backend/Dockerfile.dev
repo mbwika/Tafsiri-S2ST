@@ -1,72 +1,90 @@
-# Use an official Python runtime as the base image
-FROM ubuntu:22.04
+
+# Base image with CUDA 12.4 and Python
+FROM pytorch/pytorch:2.2.2-cuda12.1-cudnn8-runtime
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive \
-    TZ=Etc/UTC
+    TZ=Etc/UTC \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 
-# Set the working directory in the container
-WORKDIR /app
-
-# Copy the application code and requirements file
-COPY ./app /app
-
-# Install system dependencies and set timezone
+# System dependencies
 RUN apt-get update && \
-    apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
-        python3 \
-        python3-pip \
-        ffmpeg \
-        protobuf-compiler \
-        tzdata && \
-    ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
+    ffmpeg \
+    git \
+    curl \
+    tzdata \
+    libsndfile1 \
+    && ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy the requirements file and install dependencies
-COPY requirements.txt .
+# Create and use a non-root user
+RUN useradd -m appuser
+USER appuser
+WORKDIR /app
+
+# Copy app source code
+COPY --chown=appuser:appuser ./app /app
+COPY --chown=appuser:appuser requirements.txt .
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-# Expose the API port
+# Expose port
 EXPOSE 8000
 
-# Command to run the API
-CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]
+# Command to start FastAPI with uvicorn
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 
+# # Use an official Python runtime as the base image
+# FROM ubuntu:22.04
 
+# # Set environment variables
+# ENV DEBIAN_FRONTEND=noninteractive \
+#     TZ=Etc/UTC
 
-# Uncomment the following lines if you want to use a different approach for development
+# # Use root for install steps
+# USER root
 
+# # Copy app code and set permissions
+# COPY --chown=appuser:appuser ./app /app
 
-# # Use an official Python image for development
-# FROM python:3.11.7
+# # Use a non-root user to run the application
+# RUN useradd -m appuser
+# USER appuser
 
-# # Set the working directory inside the container
+# # Set the working directory in the container
 # WORKDIR /app
 
-# # Install system dependencies for torchaudio (or any other dependencies)
-# RUN apt update && apt install -y \
+# # Copy the application code and requirements file
+# COPY ./app /app
+
+# # Install system dependencies and set timezone
+# RUN apt-get update && \
+#     apt-get upgrade -y && \
+#     apt-get install -y --no-install-recommends \
+#     python3 \
+#     python3-pip \
 #     ffmpeg \
-#     && rm -rf /var/lib/apt/lists/*
+#     protobuf-compiler \
+#     tzdata && \
+#     ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
+#     dpkg-reconfigure -f noninteractive tzdata && \
+#     apt-get clean && \
+#     rm -rf /var/lib/apt/lists/*
 
 # # Copy the requirements file and install dependencies
 # COPY requirements.txt .
 
-# # Install development dependencies (this will be cached unless requirements.txt changes)
+# # Install Python dependencies
 # RUN pip install --no-cache-dir -r requirements.txt
 
-# # Install additional tools for live-reloading, like `watchgod` (used by Uvicorn for auto-reload)
-# RUN pip install watchgod
-
-# # Copy the application code
-# COPY . .
-
-# # Expose FastAPI's default port
+# # Expose the API port
 # EXPOSE 8000
 
-# # Use Uvicorn with --reload to enable live-reloading in development
-# CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# # Command to run the API
+# CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
