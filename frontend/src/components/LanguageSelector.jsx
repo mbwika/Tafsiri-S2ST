@@ -338,7 +338,7 @@ const LanguageSelector = ({ onUploadSuccess }) => {
         </div>
 
         <div className="select-group">
-          <label className="select-label">Voice Style</label>
+          <label className="select-label">Voice</label>
           <select
             value={selectedVoice}
             onChange={handleVoiceChange}
