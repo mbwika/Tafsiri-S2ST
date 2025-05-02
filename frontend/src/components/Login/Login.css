@@ -1,0 +1,254 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+@import "tailwindcss";
+
+/* Base Styles */
+body {
+  font-family: 'Poppins', sans-serif;
+  width: 100%;
+  min-height: 100vh;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+/* Login Page Background */
+.login-body {
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  background: url('../../assets/road-autumn.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: #fff;
+}
+
+/* Logo */
+.logo {
+  height: 70px;
+  width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+  order: 1;
+}
+
+/* Login Container */
+.login-container {
+  width: 450px;
+  max-width: 600px;
+  padding: 0.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.24);
+}
+
+/* Header */
+.login-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+/* Heading */
+.login-container h1 {
+  font-size: 36px;
+  line-height: 3;
+  font-weight: 600;
+  text-align: center;
+  color: #ffffff;
+}
+
+/* Form */
+.login-form {
+  width: 100%;
+}
+
+.login-form .form-group {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  border-radius: 30px;
+  margin-bottom: 15px;
+  position: relative;
+  height: 50px;
+}
+
+.form-group input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  padding: 8px;
+  background: transparent;
+  color: #ffffff;
+}
+
+/* Input Styling */
+.login-form input {
+  width: 100%;
+  height: 100%;
+  padding: 0.5rem 1rem;
+  border-radius: 40px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
+  color: #ffffff;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.login-form input::placeholder {
+  color: #fff;
+  opacity: 0.5;
+}
+
+.login-form input:focus,
+.login-form input:focus-visible {
+  outline: none;
+  border: 1px solid #fff;
+}
+
+/* Icon */
+.icon {
+  color: #fff;
+  font-size: 20px;
+  margin: 8px;
+}
+
+/* Remember Me Section */
+.remember-me {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  color: #fff;
+}
+
+.remember-me label {
+  margin-left: 8px;
+}
+
+.remember-me input {
+  width: 15px;
+  height: 15px;
+  margin-right: 4px;
+}
+
+/* Forgot Password */
+.forgot-password {
+  margin-left: auto;
+  text-decoration: none;
+  font-size: 15px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+.password-group {
+    position: relative;
+  }
+  
+  .password-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
+    position: relative;
+  }
+  
+  .tooltip {
+    position: absolute;
+    top: -30px; /* Slightly closer, we'll move it */
+    left: 50%;
+    transform: translateX(-50%) translateY(5px); /* Start 5px lower */
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    font-size: 12px;
+    padding: 6px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0; /* Start hidden */
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+    z-index: 10;
+  }
+  
+  /* When hovering, show + move tooltip up */
+  .password-toggle:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0); /* Slide up */
+  }
+  
+  /* Button */
+.login-form button {
+  width: 100%;
+  height: 45px;
+  margin-top: 20px;
+  border-radius: 40px;
+  border: none;
+  background: #fff;
+  color: #333;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.login-form button:hover,
+.login-form button:focus {
+  background: #fff;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+  outline: none;
+}
+
+/* Register Link */
+.register-link {
+  text-align: center;
+  font-size: 14.5px;
+  color: #fff;
+  margin-top: 20px;
+}
+
+.register-link a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}
+
+/* Footer */
+.login-footer {
+  text-align: center;
+  font-size: 14.5px;
+  margin-top: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.login-footer a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-footer a:hover {
+  text-decoration: underline;
+}
+
+.login-footer p {
+  color: #fff;
+}

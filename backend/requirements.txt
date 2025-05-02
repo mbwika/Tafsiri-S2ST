@@ -75,7 +75,3 @@ librosa
 pip-chill
 pydub
 tomli
-
-
-# SeamlessM4T core (from Meta's GitHub)
-git+https://github.com/facebookresearch/seamless_communication.git

@@ -91,16 +91,42 @@ jobs:
           docker compose push
 
   deploy:
-    name: Deploy Application
-    needs: build-and-deploy
-    runs-on: self-hosted  # Use a self-hosted runner for local deployment
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+            name: Deploy to DigitalOcean
+            needs: build-and-deploy
+            runs-on: ubuntu-latest
+        
+            steps:
+              - name: Checkout Code
+                uses: actions/checkout@v4
+        
+              - name: Setup SSH Key
+                run: |
+                  mkdir -p ~/.ssh
+                  echo "${{ secrets.DO_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+                  chmod 600 ~/.ssh/id_rsa
+                  ssh-keyscan -H ${{ secrets.DO_HOST }} >> ~/.ssh/known_hosts
+        
+              - name: Deploy via SSH
+                run: |
+                  ssh -o StrictHostKeyChecking=no ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }} << 'EOF'
+                    cd /path/to/your/project  # Replace with your actual path on the droplet
+                    git pull origin main
+                    docker compose down
+                    docker compose up --build -d
+                    curl -f http://localhost:8000/docs || exit 1
+                  EOF
+        
+  # deploy:
+  #   name: Deploy Application
+  #   needs: build-and-deploy
+  #   runs-on: self-hosted  # Use a self-hosted runner for local deployment
+  #   steps:
+  #     - name: Checkout Code
+  #       uses: actions/checkout@v4
 
-      - name: Deploy Locally
-        run: |
-          echo "Deploying locally..."
-          docker compose down
-          docker compose up --build -d
-          curl -f http://localhost:8000/docs || exit 1
+  #     - name: Deploy Locally
+  #       run: |
+  #         echo "Deploying locally..."
+  #         docker compose down
+  #         docker compose up --build -d
+  #         curl -f http://localhost:8000/docs || exit 1

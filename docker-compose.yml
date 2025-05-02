@@ -25,30 +25,95 @@
 #*****LOCAL DEPLOYMENT***********************#
 #**Make sure Docker is installed in the localhost**#
 
+# services:
+#   backend:
+#     build:
+#       context: ./backend-llms
+#       dockerfile: Dockerfile.FastAPI  # Use the production Dockerfile for backend
+#       # dockerfile: Dockerfile.dev  # Use the development Dockerfile for backend
+#     container_name: backend-fastapi
+#     ports:
+#       - "8000:8000"
+#     volumes:
+#       - ./backend:/app
+#     env_file:
+#       - ./backend/.env  # Mount the backend code to enable live-reloading
+#     restart: always
+
+#   frontend:
+#     build:
+#       context: ./frontend
+#       dockerfile: Dockerfile.ReactJS  # Use the production Dockerfile
+#       # dockerfile: Dockerfile.dev  # Use the development Dockerfile
+#     container_name: frontend-reactjs
+#     ports:
+#       - "3000:80"
+#     volumes:
+#       - ./frontend:/app  # Mount the frontend code for live reloading
+#     depends_on:
+#       - backend-llms
+#       - backend-login
+#       - backend-database
+#     restart: always
+
+
+version: '3.9'
+
 services:
-  backend:
+  backend-fastapi:
     build:
-      context: ./backend
-      dockerfile: Dockerfile.dev  # Use the development Dockerfile for backend
-    container_name: backend-dev
+      context: ./backend-llms
+      dockerfile: Dockerfile.FastAPI
+    container_name: backend-fastapi
     ports:
       - "8000:8000"
     volumes:
-      - ./backend:/app
+      - ./backend-llms:/app
     env_file:
-      - ./backend/.env  # Mount the backend code to enable live-reloading
+      - ./backend-llms/.env
     restart: always
 
-  frontend:
+  backend-nodejs:
+    build:
+      context: ./backend-login
+      dockerfile: Dockerfile.NodeJS
+    container_name: backend-login
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend-login:/app
+    env_file:
+      - ./backend-login/.env
+    depends_on:
+      - backend-database
+    restart: always
+
+  backend-postgresql:
+    image: postgres:15
+    container_name: backend-database
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: always
+
+  frontend-reactjs:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.dev  # Use the development Dockerfile
-    container_name: frontend-dev
+      dockerfile: Dockerfile.ReactJS
+    container_name: frontend-reactjs
     ports:
       - "3000:80"
     volumes:
-      - ./frontend:/app  # Mount the frontend code for live reloading
+      - ./frontend:/app
     depends_on:
-      - backend
+      - backend-llms
+      - backend-login
     restart: always
 
+volumes:
+  postgres_data:
