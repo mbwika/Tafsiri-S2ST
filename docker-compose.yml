@@ -85,10 +85,11 @@ services:
     env_file:
       - ./backend-login/.env
     depends_on:
-      - backend-database
+      backend-database:
+        condition: service_started
     restart: always
 
-  backend-postgresql:
+  backend-database:
     image: postgres:15
     container_name: backend-database
     environment:
@@ -104,16 +105,19 @@ services:
   frontend-reactjs:
     build:
       context: ./frontend
-  dockerfile: Dockerfile.ReactJS
-  container_name: frontend-reactjs
-  ports:
+      dockerfile: Dockerfile.ReactJS
+    container_name: frontend-reactjs
+    ports:
       - "3000:80"
-  volumes:
+    volumes:
       - ./frontend:/app
-  depends_on:
-      - backend-llms
-      - backend-login
-  restart: always
+    depends_on:
+      backend-fastapi:
+        condition: service_started
+      backend-login:
+        condition: service_started
+    restart: always
 
 volumes:
   postgres_data:
+
