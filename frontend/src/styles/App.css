@@ -1,4 +1,5 @@
 
+<<<<<<< HEAD
 body {
   font-family: 'Poppins', sans-serif;
   display: flex;
@@ -8,6 +9,8 @@ body {
   min-height: 100vh;
   color: rgba(255, 255, 255, 0.87);
 }
+=======
+>>>>>>> b745fb3fe51a0964ad4ca0c1d98c7cc49d29e4a8
 
 .language-upload-form {
   display: flex;
@@ -30,6 +33,14 @@ body {
   }
 }
 
+<<<<<<< HEAD
+=======
+.rotate-logo {
+  animation: spin 10s linear infinite;
+}
+
+
+>>>>>>> b745fb3fe51a0964ad4ca0c1d98c7cc49d29e4a8
 .file-upload-group {
   margin: 1rem 0;
 }
@@ -171,7 +182,11 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
+<<<<<<< HEAD
   margin-right: .1rem;
+=======
+  margin-right: 1rem;
+>>>>>>> b745fb3fe51a0964ad4ca0c1d98c7cc49d29e4a8
 }
 
 .select-group {
@@ -182,7 +197,11 @@ body {
 }
 
 .select-group div {
+<<<<<<< HEAD
   width:100%;
+=======
+  width:33%;
+>>>>>>> b745fb3fe51a0964ad4ca0c1d98c7cc49d29e4a8
   float:left;
 }
 
@@ -195,7 +214,11 @@ body {
 }
 
 .styled-select {
+<<<<<<< HEAD
   padding: 0.8rem 1rem;
+=======
+  padding: 0.8rem 3rem;
+>>>>>>> b745fb3fe51a0964ad4ca0c1d98c7cc49d29e4a8
   border: 1px solid var(--border-color);
   border-radius: 20px;
   background-color: var(--bg-primary);
@@ -325,10 +348,13 @@ body {
   width: auto;
   object-fit: contain;
   flex-shrink: 0;
+<<<<<<< HEAD
   order: 1;
 }
 .rotate-logo {
   animation: spin 10s linear infinite;
+=======
+>>>>>>> b745fb3fe51a0964ad4ca0c1d98c7cc49d29e4a8
 }
 
 .title-container {
@@ -392,6 +418,15 @@ h1 {
     margin: 0.5rem 0;
   }
   
+<<<<<<< HEAD
+=======
+  .logo {
+    order: 1;
+    height: 40px;
+  }
+
+  
+>>>>>>> b745fb3fe51a0964ad4ca0c1d98c7cc49d29e4a8
   h1 {
     font-size: 2rem;
   }
@@ -429,14 +464,21 @@ h1 {
   left: 50%;
   transform: translate(-50%, -50%);
   color: white;
+<<<<<<< HEAD
   text-shadow: #1a1a1a 0px 0px 3px;
+=======
+>>>>>>> b745fb3fe51a0964ad4ca0c1d98c7cc49d29e4a8
   font-weight: bold;
   font-size: 0.8rem;
 }
 
 /* Audio Player Styles */
 .audio-player-container {
+<<<<<<< HEAD
   margin-top: 0.5rem;
+=======
+  margin-top: 1.5rem;
+>>>>>>> b745fb3fe51a0964ad4ca0c1d98c7cc49d29e4a8
 }
 
 .audio-player {

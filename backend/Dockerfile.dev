@@ -1,0 +1,44 @@
+
+# Base image with CUDA 12.4 and Python
+FROM pytorch/pytorch:2.2.2-cuda12.1-cudnn8-runtime
+
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive \
+    TZ=Etc/UTC \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+# System dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    ffmpeg \
+    git \
+    curl \
+    tzdata \
+    libsndfile1 \
+    && ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create and use a non-root user
+RUN useradd -m appuser
+USER appuser
+WORKDIR /app
+
+# Copy app source code
+COPY --chown=appuser:appuser ./app /app
+COPY --chown=appuser:appuser requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# 🔧 Install SeamlessM4T (seamless_communication) via pip
+RUN pip install --no-cache-dir git+https://github.com/facebookresearch/seamless_communication.git
+
+# Expose port
+EXPOSE 8000
+
+# Command to start FastAPI with uvicorn
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -338,7 +338,11 @@ const LanguageSelector = ({ onUploadSuccess }) => {
         </div>
 
         <div className="select-group">
+<<<<<<< HEAD
           <label className="select-label">Voice</label>
+=======
+          <label className="select-label">Voice Style</label>
+>>>>>>> b745fb3fe51a0964ad4ca0c1d98c7cc49d29e4a8
           <select
             value={selectedVoice}
             onChange={handleVoiceChange}
