@@ -57,33 +57,32 @@
 #     restart: always
 
 
-version: '3.9'
 
 services:
   backend-fastapi:
     build:
-      context: ./backend-llms
+      context: ./backend
       dockerfile: Dockerfile.FastAPI
     container_name: backend-fastapi
     ports:
       - "8000:8000"
     volumes:
-      - ./backend-llms:/app
+      - ./backend:/app
     env_file:
-      - ./backend-llms/.env
+      - ./backend/.env
     restart: always
 
   backend-nodejs:
     build:
-      context: ./backend-login
+      context: ./backend
       dockerfile: Dockerfile.NodeJS
     container_name: backend-login
     ports:
       - "3000:3000"
     volumes:
-      - ./backend-login:/app
+      - ./backend:/login
     env_file:
-      - ./backend-login/.env
+      - ./backend/login/.env
     depends_on:
       backend-database:
         condition: service_started
@@ -105,7 +104,7 @@ services:
   frontend-reactjs:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.ReactJS
+      dockerfile: Dockerfile.dev
     container_name: frontend-reactjs
     ports:
       - "3000:80"
