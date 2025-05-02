@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 
 
 // File: src/main.jsx
@@ -9,10 +8,6 @@ import Login from './components/Login/Login.jsx';
 import App from './App.jsx';
 import Register from './components/Login/Register.jsx'; 
 import './styles/theme.css';
-=======
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
->>>>>>> b745fb3fe51a0964ad4ca0c1d98c7cc49d29e4a8
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(

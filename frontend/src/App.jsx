@@ -12,13 +12,6 @@ export default function App() {
   const [taskId, setTaskId] = useState(null);
   const [isTranslationReady, setIsTranslationReady] = useState(false);
 
-<<<<<<< HEAD
-=======
-  // const handleNewTranslation = () => {
-  //   setIsTranslationReady(true);
-  // };
-
->>>>>>> b745fb3fe51a0964ad4ca0c1d98c7cc49d29e4a8
   const handleNewTranslation = () => {
     setTaskId(null); // Clear previous translation
   };
