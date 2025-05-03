@@ -53,10 +53,10 @@ tokenizers
 torch
 torchaudio
 torchvision
-tqdm==4.67.1
+tqdm
 transformers
-triton==3.2.0
-typing_extensions==4.12.2
+triton
+typing_extensions
 urllib3==2.3.0
 uvicorn==0.34.0
 yarl==1.18.3
