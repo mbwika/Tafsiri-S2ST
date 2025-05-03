@@ -55,7 +55,7 @@ COPY backend/login/package*.json ./
 RUN npm install --omit=dev
 
 # Copy the rest of the application code
-COPY backend/login .
+COPY . .
 
 # Expose the port
 EXPOSE 3000

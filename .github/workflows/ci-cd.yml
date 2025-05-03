@@ -121,7 +121,7 @@ jobs:
             export POSTGRES_USER="${POSTGRES_USER}"
             export POSTGRES_PASSWORD="${POSTGRES_PASSWORD}"
 
-            cd /path/to/your/project  # Replace with your actual path
+            cd /opt/tafsiri-s2st  # Actual path
             git pull origin main
             docker compose down
             docker compose up --build -d
