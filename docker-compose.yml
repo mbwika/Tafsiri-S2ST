@@ -74,8 +74,8 @@ services:
 
   backend-nodejs:
     build:
-      context: ./backend
-      dockerfile: Dockerfile.NodeJS
+      context: ./backend/login
+      dockerfile: ../../backend/Dockerfile.NodeJS
     container_name: backend-login
     ports:
       - "3000:3000"

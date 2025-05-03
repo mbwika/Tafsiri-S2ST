@@ -48,12 +48,14 @@ FROM node:23-slim
 # Create app directory
 WORKDIR /app
 
-# Install app dependencies
-COPY package*.json ./
+# Copy package files before installing dependencies
+COPY backend/login/package*.json ./
+
+# Install dependencies (omit dev dependencies for production)
 RUN npm install --omit=dev
 
-# Bundle app source
-COPY . .
+# Copy the rest of the application code
+COPY backend/login .
 
 # Expose the port
 EXPOSE 3000
