@@ -22,6 +22,11 @@
 # Use an official Python image
 FROM python:alpine
 
+# Install useradd and create user
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    passwd \
+ && rm -rf /var/lib/apt/lists/*
+
 # Use a non-root user to run the application
 RUN useradd -m appuser
 USER appuser
