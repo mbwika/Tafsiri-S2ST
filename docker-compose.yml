@@ -62,7 +62,7 @@ services:
   backend-fastapi:
     build:
       context: ./backend
-      dockerfile: Dockerfile.FastAPI
+      dockerfile: Dockerfile
     container_name: backend-fastapi
     ports:
       - "8000:8000"
