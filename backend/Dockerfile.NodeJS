@@ -49,7 +49,7 @@ FROM node:23-slim
 WORKDIR /app
 
 # Copy package files before installing dependencies
-COPY backend/login/package*.json ./
+COPY login/package*.json ./
 
 # Install dependencies (omit dev dependencies for production)
 RUN npm install --omit=dev
