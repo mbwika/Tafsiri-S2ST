@@ -31,11 +31,12 @@ COPY --chown=appuser:appuser ./app /app
 COPY --chown=appuser:appuser requirements.txt .
 
 # Install Python dependencies
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
-
 # 🔧 Install SeamlessM4T (seamless_communication) via pip
-RUN pip install --no-cache-dir git+https://github.com/facebookresearch/seamless_communication.git
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir \
+        -r requirements.txt \
+        git+https://github.com/facebookresearch/seamless_communication.git
+
 
 # Expose port
 EXPOSE 8000

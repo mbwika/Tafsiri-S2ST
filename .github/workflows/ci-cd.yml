@@ -67,6 +67,7 @@ jobs:
       - name: Free up disk space
         run: |
           docker system prune -af
+          docker volume prune -f
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /opt/ghc
           sudo rm -rf /usr/local/share/boost
