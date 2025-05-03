@@ -113,7 +113,7 @@ services:
     depends_on:
       backend-fastapi:
         condition: service_started
-      backend-login:
+      backend-nodejs:
         condition: service_started
     restart: always
 
