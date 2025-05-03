@@ -20,16 +20,21 @@
 # EXPOSE 8000
 
 # Use an official Python image
-FROM python:alpine
+# FROM python:alpine
+FROM python:3.13-alpine
 
-# Install useradd and create user
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    passwd \
- && rm -rf /var/lib/apt/lists/*
+# Install useradd and create a user
+RUN apk add --no-cache shadow && \
+    useradd -m appuser
 
-# Use a non-root user to run the application
-RUN useradd -m appuser
-USER appuser
+# # Install useradd and create user
+# RUN apt-get update && apt-get install -y --no-install-recommends \
+#     passwd \
+#  && rm -rf /var/lib/apt/lists/*
+
+# # Use a non-root user to run the application
+# RUN useradd -m appuser
+# USER appuser
 
 # Set the working directory inside the container
 WORKDIR /app
