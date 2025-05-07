@@ -37,10 +37,11 @@ RUN pip install --no-cache-dir --upgrade pip && \
         -r requirements.txt \
         git+https://github.com/facebookresearch/seamless_communication.git
 
+RUN pip install uvicorn==0.34.0
 RUN which uvicorn && uvicorn --version
 
 # Expose port
 EXPOSE 8000
 
 # Command to start FastAPI with uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

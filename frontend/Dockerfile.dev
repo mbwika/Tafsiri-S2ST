@@ -12,7 +12,7 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 # Use the following command to build and run the Docker container
-# docker build -t frontend .
-# docker run -d -p 3000:80 tafsiri-s2st-frontend *RUN
+# docker build -t frontend-reactjs .
+# docker run -d -p 3000:80 --name frontend-reactjs-container frontend-reactjs
 # Use the following command to run the Docker container in development mode
 # docker run -d -p 80:80 -v $(pwd):/app frontend
