@@ -56,7 +56,7 @@ export default function App() {
       </div>
 
         <footer className="app-footer">
-          <p class="">© 2025 <a href="https://artscilab.utdallas.edu/"> ArtSciLab</a>. The University of Texas at Dallas (UTD).</p>
+          <p className="">© 2025 <a href="https://artscilab.utdallas.edu/"> ArtSciLab</a>. The University of Texas at Dallas (UTD).</p>
         </footer>
       </div>
     </div>

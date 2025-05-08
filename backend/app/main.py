@@ -18,13 +18,20 @@ import uuid
 
 app = FastAPI()
 
+# Define allowed origins
+origins = [
+    "https://tafsiri.creativedisturbance.org",  # Your deployed frontend
+    "http://localhost:5173",                    # Vite dev server (localhost)
+    "http://127.0.0.1:5173"                     # Alternative localhost
+]
+
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Load SeamlessM4T model

@@ -1,3 +1,5 @@
+
+
 import { useState } from 'react';
 import { uploadAudio } from '../api/apiService';
 
@@ -230,14 +232,10 @@ const languages = [
     voices: ["mt-MT-GraceNeural", "mt-MT-JosephNeural"],
   },
   {
-    languageName: "Portuguese (Brazilian)",
+    languageName: "Portuguese",
     languageCode: "por",
-    voices: ["pt-BR-AntonioNeural", "pt-BR-FranciscaNeural", "pt-BR-ThalitaMultilingualNeural"],
-  },
-  {
-    languageName: "Portuguese (Portugal)",
-    languageCode: "por",
-    voices: ["pt-PT-DuarteNeural", "pt-PT-RaquelNeural"],
+    voices: ["pt-BR-AntonioNeural", "pt-BR-FranciscaNeural", "pt-BR-ThalitaMultilingualNeural", 
+      "pt-PT-DuarteNeural", "pt-PT-RaquelNeural"],
   },
   {
     languageName: "Russian",
@@ -327,8 +325,7 @@ const LanguageSelector = ({ onUploadSuccess }) => {
           <select
             value={selectedLanguageCode}
             onChange={handleLanguageChange}
-            className="styled-select"
-          >
+            className="styled-select">
             {languages.map((lang) => (
               <option key={lang.languageCode} value={lang.languageCode}>
                 {lang.languageName}
