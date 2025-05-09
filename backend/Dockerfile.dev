@@ -37,8 +37,11 @@ RUN pip install --no-cache-dir --upgrade pip && \
         -r requirements.txt \
         git+https://github.com/facebookresearch/seamless_communication.git
 
-RUN pip install uvicorn==0.34.0
-RUN which uvicorn && uvicorn --version
+# Install Uvicorn using pip
+RUN pip install --no-cache-dir uvicorn==0.34.0
+
+# Confirm it's installed correctly
+RUN python -m uvicorn --version
 
 # Expose port
 EXPOSE 8000

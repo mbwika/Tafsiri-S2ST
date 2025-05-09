@@ -39,8 +39,8 @@ const Register = () => {
     const affiliation = form.affiliation.value;
 
     try {
-      const response = await fetch("http://localhost:5000/api/register", {
-        // const response = await fetch("https://tafsiri.creativedisturbance.org:5000/api/register", {
+      // const response = await fetch("http://localhost:5000/api/register", {
+         const response = await fetch("https://tafsiri.creativedisturbance.org:5000/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
