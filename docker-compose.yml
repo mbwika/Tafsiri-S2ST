@@ -66,8 +66,8 @@ services:
     container_name: backend-fastapi
     ports:
       - "8000:8000"
-    volumes:
-      - ./backend:/app
+    volumes: []
+      # - ./backend:/app
     env_file:
       - ./backend/.env
     restart: always
