@@ -78,7 +78,8 @@ services:
       dockerfile: Dockerfile.NodeJS
     container_name: backend-login
     ports:
-      - "3000:3000"
+      - "5000:5000"
+    working_dir: /login/login
     volumes:
       - ./backend:/login
     env_file:

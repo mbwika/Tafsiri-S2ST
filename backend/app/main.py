@@ -1,4 +1,5 @@
-# main.py
+
+# backend-fastapi/app/main.py
 
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException, BackgroundTasks
 from fastapi.responses import JSONResponse, FileResponse
@@ -16,7 +17,7 @@ from tempfile import NamedTemporaryFile
 from typing import Dict
 import uuid
 
-app = FastAPI()
+app = FastAPI(root_path="/api-llm")
 
 # Define allowed origins
 origins = [

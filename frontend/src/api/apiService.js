@@ -1,9 +1,11 @@
+
+
 // File: frontend/src/api/apiService.js
 
 import axios from 'axios';
 
 // const API_BASE = 'http://localhost:8000';
-const API_BASE = 'https://tafsiri.creativedisturbance.org:8000';
+const API_BASE = 'https://tafsiri.creativedisturbance.org/api-llm';
 
 export const uploadAudio = async (file, tgtLang, voice) => {
   const formData = new FormData();

@@ -9,7 +9,7 @@ certifi==2025.1.31
 charset-normalizer==3.4.1
 click==8.1.8
 edge-tts==7.0.0
-fastapi==0.115.11
+# fastapi==0.115.11
 filelock==3.18.0
 frozenlist==1.5.0
 fsspec
@@ -59,6 +59,8 @@ triton
 typing_extensions
 urllib3==2.3.0
 uvicorn==0.34.0
+fastapi
+uvicorn[standard]
 yarl==1.18.3
 tiktoken==0.9.0
 blobfile==3.0.0
