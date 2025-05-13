@@ -19,8 +19,9 @@ body {
   flex-direction: column;
   width: 100%;
   min-height: 100vh;
-  background: url('../../assets/road-autumn.jpg') no-repeat center center fixed;
-  background-size: cover;
+  background-color: #111827;
+  /* background: url('../../assets/road-autumn.jpg') no-repeat center center fixed;
+  background-size: cover; */
   color: #fff;
 }
 

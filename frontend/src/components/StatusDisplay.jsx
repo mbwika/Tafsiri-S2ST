@@ -120,7 +120,8 @@ export default function StatusDisplay({ taskId, onNewTranslation }) {
             {audioUrl && (
                 <button className="submit-button px-4 py-2 text-white">
                 <a
-                  href={`http://localhost:8000/download/${taskId}`}
+                  // href={`http://localhost:8000/download/${taskId}`}
+                  href={`https://tafsiri.creativedisturbance.org/api-llm/download/${taskId}`}
                   download
                   className="flex justify-center gap-2"
                 >

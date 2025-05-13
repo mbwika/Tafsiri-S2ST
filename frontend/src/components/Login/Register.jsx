@@ -130,7 +130,7 @@ const Register = () => {
         <p className="select-label">
           © 2025 <a href="https://artscilab.utdallas.edu/">ArtSciLab</a>. The University of Texas at Dallas (UTD).
         </p>
-        <p>Privacy Policy | Terms of Use</p>
+        {/* <p>Privacy Policy | Terms of Use</p> */}
       </footer>
     </div>
   );
