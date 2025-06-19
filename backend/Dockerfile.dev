@@ -1,21 +1,69 @@
+# fastapi/dockerfile
 
-# Base image with CUDA 12.4 and Python
-FROM pytorch/pytorch:2.2.2-cuda12.1-cudnn8-runtime
+# # Base image with CUDA 12.4 and Python
+# FROM pytorch/pytorch:2.2.2-cuda12.1-cudnn8-runtime
 
 # # Set environment variables
 # ENV DEBIAN_FRONTEND=noninteractive \
 #     TZ=Etc/UTC \
 #     PYTHONDONTWRITEBYTECODE=1 \
-#     PYTHONUNBUFFERED=1
+#     PYTHONUNBUFFERED=1 \
+#     PATH="/home/appuser/.local/bin:${PATH}"
 
-# Set environment variables
+# # System dependencies
+# RUN apt-get update && \
+#     apt-get install -y --no-install-recommends \
+#     ffmpeg \
+#     git \
+#     curl \
+#     tzdata \
+#     libsndfile1 \
+#     && ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
+#     dpkg-reconfigure -f noninteractive tzdata && \
+#     apt-get clean && \
+#     rm -rf /var/lib/apt/lists/*
+
+# # Create and use a non-root user
+# RUN useradd -m appuser
+# USER appuser
+# WORKDIR /app
+
+# # Copy app source code
+# COPY --chown=appuser:appuser ./app /app
+# COPY --chown=appuser:appuser requirements.txt .
+
+# # Install Python dependencies
+# # 🔧 Install SeamlessM4T (seamless_communication) via pip
+# RUN pip install --no-cache-dir --upgrade pip && \
+#     pip install --no-cache-dir \
+#         -r requirements.txt \
+#         git+https://github.com/facebookresearch/seamless_communication.git
+
+# # Install Uvicorn using pip
+# RUN pip install --no-cache-dir uvicorn==0.34.0
+
+# # Confirm it's installed correctly
+# RUN python -m uvicorn --version
+
+# # Expose port
+# EXPOSE 8000
+
+# # Command to start FastAPI with uvicorn
+# # CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# # CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+# Base image with CUDA and Python (from PyTorch)
+FROM pytorch/pytorch:2.2.2-cuda12.1-cudnn8-runtime
+
+# Environment variables
 ENV DEBIAN_FRONTEND=noninteractive \
     TZ=Etc/UTC \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PATH="/home/appuser/.local/bin:${PATH}"
 
-# System dependencies
+# Install system packages
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     ffmpeg \
@@ -28,31 +76,26 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Create and use a non-root user
+# Create app user and set working directory
 RUN useradd -m appuser
 USER appuser
 WORKDIR /app
 
-# Copy app source code
+# Copy app code and install dependencies
 COPY --chown=appuser:appuser ./app /app
 COPY --chown=appuser:appuser requirements.txt .
 
-# Install Python dependencies
-# 🔧 Install SeamlessM4T (seamless_communication) via pip
+# Python packages
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir \
         -r requirements.txt \
-        git+https://github.com/facebookresearch/seamless_communication.git
+        git+https://github.com/facebookresearch/seamless_communication.git \
+        uvicorn==0.34.0
 
-# Install Uvicorn using pip
-RUN pip install --no-cache-dir uvicorn==0.34.0
-
-# Confirm it's installed correctly
-RUN python -m uvicorn --version
-
-# Expose port
+# Expose the FastAPI port
 EXPOSE 8000
 
-# Command to start FastAPI with uvicorn
-CMD ["python", "-m", "/usr/bin/uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-# CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Start FastAPI using uvicorn
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+

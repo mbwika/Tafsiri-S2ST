@@ -56,10 +56,16 @@
 #       - backend-database
 #     restart: always
 
+# docker-compose.yml
 
+networks:
+  tafsiri_net:
+    driver: bridge
 
 services:
   backend-fastapi:
+    networks:
+      - tafsiri_net
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
@@ -73,36 +79,43 @@ services:
     restart: always
 
   backend-nodejs:
+    networks:
+      - tafsiri_net
     build:
       context: ./backend
       dockerfile: Dockerfile.NodeJS
-    container_name: backend-login
+    container_name: backend-nodejs
     ports:
       - "5000:5000"
     working_dir: /login/login
     volumes:
       - ./backend:/login
+      - ./backend/login/.env:/login/.env
     env_file:
       - ./backend/login/.env
     depends_on:
       backend-database:
         condition: service_started
+    command: node server.js
     restart: always
 
   backend-database:
+    networks:
+      - tafsiri_net
     image: postgres:15
-    container_name: backend-database
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    container_name: backend-dbpssql
+    env_file:
+      - ./backend/login/.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./backend/login/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
     restart: always
 
   frontend-reactjs:
+    networks:
+      - tafsiri_net
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev

@@ -1,3 +1,5 @@
+
+
 import React, { useState } from "react";
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
@@ -36,7 +38,17 @@ const Login = () => {
 
     try {
         // const response = await fetch("http://localhost:5000/api/login", {
-        const response = await fetch("https://tafsiri.creativedisturbance.org/api/login", {
+        const API_URL =
+          import.meta.env.VITE_API_URL ||
+          (window.location.hostname === 'localhost'
+           ? 'http://localhost:5000'
+           : '/api');
+        // const apiBaseUrl = import.meta.env.VITE_API_URL || '/api';
+
+        const response = await fetch(`${API_URL}/login`, {
+
+        // const response = await fetch(`http://localhost:5000/api/login`, {
+        // const response = await fetch("/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
