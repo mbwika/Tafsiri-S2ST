@@ -56,6 +56,14 @@ jobs:
       - name: Run Snyk Test (Python backend)
         run: snyk test --file=requirements.txt --package-manager=pip
 
+      # Fallback: Run pip-audit if Snyk is not available or fails
+      - name: Install pip-audit
+        run: pip install pip-audit
+
+      - name: Run pip-audit as fallback
+        continue-on-error: true
+        run: pip-audit
+
       # Placeholder for backend tests
       - name: Run Other Tests (if any)
         run: echo "No other tests for now"
@@ -89,6 +97,12 @@ jobs:
           npm install -g snyk
           snyk auth $SNYK_TOKEN
           snyk test
+
+      # Fallback: Run npm audit if Snyk is not available or fails
+      - name: Run npm audit as fallback
+        continue-on-error: true
+        run: |
+          npm audit --audit-level=moderate
 
   # Build and Push Job: Builds Docker images and runs Snyk container scan
   build-and-deploy:
