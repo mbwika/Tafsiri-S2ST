@@ -1,68 +1,11 @@
-#**********REMOTE DEPPLOYMENT******************#
-#**Remember to add server access secrets on Actions**#
-
-# services:
-#   backend:
-#     build: ./backend
-#     container_name: tafsiri-backend
-#     ports:
-#       - "8000:8000"
-#     volumes:
-#       - ./backend:/app
-#     env_file:
-#       - ./backend/.env
-#     restart: always
-
-#   frontend:
-#     build: ./frontend
-#     container_name: tafsiri-frontend
-#     ports:
-#       - "3000:3000"
-#     depends_on:
-#       - backend
-#     restart: always
-
-#*****LOCAL DEPLOYMENT***********************#
-#**Make sure Docker is installed in the localhost**#
-
-# services:
-#   backend:
-#     build:
-#       context: ./backend-llms
-#       dockerfile: Dockerfile.FastAPI  # Use the production Dockerfile for backend
-#       # dockerfile: Dockerfile.dev  # Use the development Dockerfile for backend
-#     container_name: backend-fastapi
-#     ports:
-#       - "8000:8000"
-#     volumes:
-#       - ./backend:/app
-#     env_file:
-#       - ./backend/.env  # Mount the backend code to enable live-reloading
-#     restart: always
-
-#   frontend:
-#     build:
-#       context: ./frontend
-#       dockerfile: Dockerfile.ReactJS  # Use the production Dockerfile
-#       # dockerfile: Dockerfile.dev  # Use the development Dockerfile
-#     container_name: frontend-reactjs
-#     ports:
-#       - "3000:80"
-#     volumes:
-#       - ./frontend:/app  # Mount the frontend code for live reloading
-#     depends_on:
-#       - backend-llms
-#       - backend-login
-#       - backend-database
-#     restart: always
-
 # docker-compose.yml
 
 networks:
   tafsiri_net:
-    driver: bridge
+    driver: bridge  # Define a custom bridge network for inter-service communication
 
 services:
+  # FastAPI backend service for translation
   backend-fastapi:
     networks:
       - tafsiri_net
@@ -71,13 +14,14 @@ services:
       dockerfile: Dockerfile.dev
     container_name: backend-fastapi
     ports:
-      - "8000:8000"
+      - "8000:8000"  # Expose FastAPI on port 8000
     volumes: []
       # - ./backend:/app
     env_file:
       - ./backend/.env
     restart: always
 
+  # NodeJS backend service for authentication/login
   backend-nodejs:
     networks:
       - tafsiri_net
@@ -86,7 +30,7 @@ services:
       dockerfile: Dockerfile.NodeJS
     container_name: backend-nodejs
     ports:
-      - "5000:5000"
+      - "5000:5000"  # Expose NodeJS backend on port 5000
     working_dir: /login/login
     volumes:
       - ./backend:/login
@@ -95,10 +39,11 @@ services:
       - ./backend/login/.env
     depends_on:
       backend-database:
-        condition: service_started
+        condition: service_started  # Wait for database to start before running NodeJS backend
     command: node server.js
     restart: always
 
+  # PostgreSQL database service
   backend-database:
     networks:
       - tafsiri_net
@@ -107,12 +52,13 @@ services:
     env_file:
       - ./backend/login/.env
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./backend/login/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data:/var/lib/postgresql/data  # Persist database data
+      - ./backend/login/init.sql:/docker-entrypoint-initdb.d/init.sql  # Initialize DB schema
     ports:
-      - "5432:5432"
+      - "5432:5432"  # Expose PostgreSQL on port 5432
     restart: always
 
+  # React frontend service served by Nginx
   frontend-reactjs:
     networks:
       - tafsiri_net
@@ -121,16 +67,17 @@ services:
       dockerfile: Dockerfile.dev
     container_name: frontend-reactjs
     ports:
-      - "3000:80"
+      - "3000:80"  # Expose frontend on port 3000 (mapped to Nginx port 80)
     volumes:
       - ./frontend:/app
+      - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       backend-fastapi:
-        condition: service_started
+        condition: service_started  # Wait for FastAPI backend
       backend-nodejs:
-        condition: service_started
+        condition: service_started  # Wait for NodeJS backend
     restart: always
 
 volumes:
-  postgres_data:
+  postgres_data:  # Named volume for persistent
 

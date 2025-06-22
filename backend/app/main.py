@@ -21,7 +21,7 @@ app = FastAPI(root_path="/api-llm")
 
 # Define allowed origins
 origins = [
-    "https://tafsiri.creativedisturbance.org",  # Your deployed frontend
+    "https://tafsiri.creativedisturbance.org",  # deployed frontend
     "http://localhost:5173",                    # Vite dev server (localhost)
     "http://localhost:3000",
     "http://127.0.0.1:5173"                     # Alternative localhost

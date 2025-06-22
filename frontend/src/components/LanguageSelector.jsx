@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { uploadAudio } from '../api/apiService';
 
+// List of supported languages, each with language name, code, and available voices
 const languages = [
   {
     languageName: "English",
@@ -274,13 +275,16 @@ const languages = [
   }
 ];
 
+// LanguageSelector component allows user to select language, voice, and upload audio for translation
 const LanguageSelector = ({ onUploadSuccess }) => {
+  // State for selected language, voice, file, audio preview URL, and upload status
   const [selectedLanguageCode, setSelectedLanguageCode] = useState(languages[0].languageCode);
   const [selectedVoice, setSelectedVoice] = useState(languages[0].voices[0]);
   const [file, setFile] = useState(null);
   const [audioUrl, setAudioUrl] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
 
+  // Handle language dropdown change: update language and reset voice to first option
   const handleLanguageChange = (event) => {
     const selectedLangCode = event.target.value;
     setSelectedLanguageCode(selectedLangCode);
@@ -288,10 +292,12 @@ const LanguageSelector = ({ onUploadSuccess }) => {
     setSelectedVoice(voices[0]);
   };
 
+  // Handle voice dropdown change
   const handleVoiceChange = (event) => {
     setSelectedVoice(event.target.value);
   };
 
+  // Handle file input change: set file and create preview URL
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
     if (selectedFile) {
@@ -300,6 +306,7 @@ const LanguageSelector = ({ onUploadSuccess }) => {
     }
   };
 
+  // Handle form submission: upload audio with selected language and voice
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!file) return;
@@ -307,7 +314,7 @@ const LanguageSelector = ({ onUploadSuccess }) => {
     setIsUploading(true);
     try {
       const response = await uploadAudio(file, selectedLanguageCode, selectedVoice);
-      onUploadSuccess(response.data.task_id);
+      onUploadSuccess(response.data.task_id); // Notify parent with task ID
     } catch (error) {
       console.error('Upload failed:', error);
     } finally {
@@ -315,11 +322,14 @@ const LanguageSelector = ({ onUploadSuccess }) => {
     }
   };
 
+  // Get the currently selected language object for voice options
   const currentLanguage = languages.find(lang => lang.languageCode === selectedLanguageCode);
 
+  // Render the language/voice selectors, file upload, audio preview, and submit button
   return (
     <form onSubmit={handleSubmit} className="language-upload-form">
       <div className="selector-container">
+        {/* Language dropdown */}
         <div className="select-group">
           <label className="select-label">Target Language</label>
           <select
@@ -334,6 +344,7 @@ const LanguageSelector = ({ onUploadSuccess }) => {
           </select>
         </div>
 
+        {/* Voice dropdown */}
         <div className="select-group">
           <label className="select-label">Voice</label>
           <select
@@ -350,6 +361,7 @@ const LanguageSelector = ({ onUploadSuccess }) => {
         </div>
       </div>
 
+      {/* File upload input and display */}
       <div className="file-upload-container">
         <label className="select-label">Drop or Choose a File</label>
         <label className="">
@@ -373,7 +385,7 @@ const LanguageSelector = ({ onUploadSuccess }) => {
         </label>
       </div>
 
-      {/* Audio player for preview */}
+      {/* Audio player for previewing selected file */}
       {audioUrl && (
         <div className="audio-player-container">
           <label className="select-label">Preview: Original Audio</label>
@@ -384,6 +396,7 @@ const LanguageSelector = ({ onUploadSuccess }) => {
         </div>
       )}
 
+      {/* Submit button for uploading and starting translation */}
       <button type="submit" className="submit-button flex gap-2 justify-center px-4 py-2" disabled={!file || isUploading}>
         <svg 
         xmlns="http://www.w3.org/2000/svg" 

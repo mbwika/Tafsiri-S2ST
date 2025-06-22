@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { checkStatus, downloadAudio } from '../api/apiService';
 
+// ProgressBar component: displays translation progress visually
 const ProgressBar = ({ progress, total }) => {
   const percentage = Math.round((progress / (total || 1)) * 100);
 
@@ -16,12 +17,14 @@ const ProgressBar = ({ progress, total }) => {
   );
 };
 
+// StatusDisplay component: shows translation status, progress, result, and download/play options
 export default function StatusDisplay({ taskId, onNewTranslation }) {
+  // State for status info, audio URL, and error messages
   const [status, setStatus] = useState(null);
   const [audioUrl, setAudioUrl] = useState(null);
   const [error, setError] = useState(null);
 
-
+  // Poll backend for translation status and fetch audio when done
   useEffect(() => {
     if (!taskId) return;
 
@@ -51,7 +54,7 @@ export default function StatusDisplay({ taskId, onNewTranslation }) {
     return () => clearInterval(interval);
   }, [taskId]);
 
-  // Clear previous when new translation starts
+  // Cleanup: revoke audio URL and reset state when new translation starts
   useEffect(() => {
     return () => {
       if (audioUrl) {
@@ -61,10 +64,12 @@ export default function StatusDisplay({ taskId, onNewTranslation }) {
     };
   }, [audioUrl, onNewTranslation]);
 
+  // If no status yet, render nothing
   if (!status) return null;
 
   return (
     <div className="status-container">
+      {/* Show error message and retry button if translation failed */}
       {error ? (
         <div className="error-message">
           <h3>Translation Error</h3>
@@ -81,6 +86,7 @@ export default function StatusDisplay({ taskId, onNewTranslation }) {
         </div>
       ) : (
         <>
+          {/* Show translation progress bar and status */}
           <div className="progress-section">
             <label className="select-label">
               Translation Progress:&nbsp;
@@ -94,6 +100,7 @@ export default function StatusDisplay({ taskId, onNewTranslation }) {
             />
           </div>
 
+          {/* Show translated text if available */}
           {status.translated_text && (
             <div className="translation-result">
               <label className="select-label">Translated Text</label>
@@ -103,6 +110,7 @@ export default function StatusDisplay({ taskId, onNewTranslation }) {
             </div>
           )}
 
+          {/* Show audio player for translated audio if available */}
           {audioUrl && (
             <div className="audio-player-container">
               <label className="select-label">Play: Translated Audio</label>
@@ -113,15 +121,14 @@ export default function StatusDisplay({ taskId, onNewTranslation }) {
                 onEnded={() => URL.revokeObjectURL(audioUrl)}
               />
             </div>
-
           )}
-          {/* <div className="action-buttons"> */}
+
+          {/* Download button for translated audio */}
           <div>
             {audioUrl && (
-                <button className="submit-button px-4 py-2 text-white">
+              <button className="submit-button px-4 py-2 text-white">
                 <a
-                  // href={`http://localhost:8000/download/${taskId}`}
-                  href={`https://tafsiri.creativedisturbance.org/api-llm/download/${taskId}`}
+                  href={`/download/${taskId}`}
                   download
                   className="flex justify-center gap-2"
                 >
