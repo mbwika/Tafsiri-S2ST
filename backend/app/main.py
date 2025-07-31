@@ -2,7 +2,7 @@
 # backend-fastapi/app/main.py
 
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException, BackgroundTasks
-from fastapi.responses import JSONResponse, FileResponse
+from fastapi.responses import JSONResponse, FileResponse, Response
 from fastapi.middleware.cors import CORSMiddleware 
 import torch
 from transformers import AutoProcessor, AutoModelForSpeechSeq2Seq
@@ -16,6 +16,9 @@ import os
 from tempfile import NamedTemporaryFile
 from typing import Dict
 import uuid
+from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
+import time
+
 
 app = FastAPI(root_path="/api-llm")
 
@@ -35,6 +38,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Prometheus metrics
+REQUEST_COUNT = Counter("translate_requests_total", "Total number of translation requests")
+REQUEST_LATENCY = Histogram("translate_request_latency_seconds", "Latency of translation requests")
+
 
 # Load SeamlessM4T model
 model_id = "facebook/seamless-m4t-v2-large"
@@ -180,6 +188,47 @@ async def translate_speech(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# API endpoint to submit audio for translation (with metrics)
+@app.post("/translate/")
+async def translate_speech(
+    file: UploadFile = File(...),
+    tgt_lang: str = Form(...),
+    voice: str = Form(...),
+    background_tasks: BackgroundTasks = BackgroundTasks()
+):
+    start_time = time.time()
+    REQUEST_COUNT.inc()  # increment request count
+
+    try:
+        # Generate a unique task ID
+        task_id = str(uuid.uuid4())
+
+        # Save the uploaded file temporarily
+        file_name = file.filename
+        output_file_name = f"{OUTPUT_DIR}/translated_{task_id}.mp3"
+        with NamedTemporaryFile(delete=False, suffix=".wav") as temp_file:
+            temp_file.write(await file.read())
+            temp_file_path = temp_file.name
+
+        # Add the task to the background
+        background_tasks.add_task(process_audio, temp_file_path, output_file_name, tgt_lang, voice, task_id)
+
+        # Return acknowledgment
+        return JSONResponse(
+            status_code=202,
+            content={
+                "message": "Audio file received and processing started.",
+                "task_id": task_id,
+                "output_file": output_file_name
+            }
+        )
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        duration = time.time() - start_time
+        REQUEST_LATENCY.observe(duration)
+
 # API endpoint to check status
 @app.get("/status/{task_id}")
 async def check_status(task_id: str):
@@ -199,6 +248,11 @@ async def download_file(task_id: str):
 
     return FileResponse(output_file, media_type="audio/mpeg", filename=f"translated_{task_id}.mp3")
 
+# API endpoint for Prometheus metrics
+@app.get("/metrics")
+def metrics():
+    return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
+    
 # Run the API
 if __name__ == "__main__":
     import uvicorn

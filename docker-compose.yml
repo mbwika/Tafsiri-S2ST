@@ -2,7 +2,7 @@
 
 networks:
   tafsiri_net:
-    driver: bridge  # Define a custom bridge network for inter-service communication
+    driver: bridge  # A custom bridge network for inter-service communication
 
 services:
   # FastAPI backend service for translation
@@ -78,6 +78,34 @@ services:
         condition: service_started  # Wait for NodeJS backend
     restart: always
 
+  # Prometheus metrics monitoring service
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    networks:
+      - tafsiri_net
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml  # Prometheus config
+    ports:
+      - "9090:9090"
+    restart: always
+
+  # Grafana service for visualizing metrics
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3001:3000"  # Access Grafana on localhost:3001
+    networks:
+      - tafsiri_net
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning  # Dashboards & datasources
+    depends_on:
+      - prometheus
+    restart: always
+
 volumes:
   postgres_data:  # Named volume for persistent
+  grafana_data:  # Named volume for Grafana data
 

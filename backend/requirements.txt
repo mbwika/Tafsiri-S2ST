@@ -77,3 +77,4 @@ librosa
 pip-chill
 pydub
 tomli
+prometheus_client
