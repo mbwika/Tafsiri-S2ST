@@ -20,7 +20,7 @@
 # EXPOSE 8000
 
 # Use an official Python Alpine image
-FROM python:3.13.5-slim
+FROM python:3.14.0-slim
 
 # Install system dependencies: ffmpeg, shadow (for useradd), and build dependencies
 RUN apk add --no-cache \
